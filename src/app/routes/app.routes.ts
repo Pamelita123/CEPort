@@ -10,15 +10,10 @@ import { MedicinesRequiredView } from '@views/medicinesRequired/medicinesRequire
 import { DashboardComponent } from '@views/dashboard/dashboard.component';
 
 export const routes: Routes = [
-  { path: '', component: LandingComponent},
+  { path: '', component: LoginView},
   { path: 'login', component: LoginView },
   { path: 'register', component: RegisterView },
   { path: 'dashboard', component: DashboardComponent },
-  { path: 'Dashboard', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'Clientes', component: ClientsView },
-  { path: 'Doctores', component: DoctorsView },
-  { path: 'Farmacia', component: MedicinesView },
-  { path: 'Diagnóstico', component: DiagnosticsView },
-  { path: 'Recetas', component: MedicinesRequiredView },
-  { path: 'Home', redirectTo: '', pathMatch: 'full' },
+  { path: 'Dashboard', component: DashboardComponent },
+  { path: 'Home', redirectTo: 'dashboard', pathMatch: 'full' },
 ]

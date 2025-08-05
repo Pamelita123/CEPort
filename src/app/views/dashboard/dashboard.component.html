@@ -1,203 +1,24 @@
-<!-- IoT Dashboard Header -->
-<div class="dashboard-header">
-  <div class="header-content">
-    <h1>
-      <i class="icon-sensor"></i>
-      Dashboard IoT - Sistema de Estacionamiento Inteligente
-    </h1>
-    <div class="header-info">
-      <span class="connection-status" [class.connected]="connectionStatus?.connected" [class.disconnected]="!connectionStatus?.connected">
-        <i class="icon-wifi" *ngIf="connectionStatus?.connected"></i>
-        <i class="icon-wifi-off" *ngIf="!connectionStatus?.connected"></i>
-        {{ connectionStatus?.connected ? 'Conectado a Adafruit IO' : 'Desconectado' }}
-      </span>
-      <span class="last-update">
-        Última actualización: {{ lastUpdate | date:'medium' }}
-      </span>
-    </div>
-  </div>
-</div>
 
-<!-- Loader Component -->
-<app-loader *ngIf="loading"></app-loader>
+<div class="landing-container">
+   
+  <div class="card-grid">
+  <app-card
+    title="Tarjeta Uno"
+    subtitle="Subtítulo A"
+    content="Contenido de la primera tarjeta."
+  ></app-card>
 
-<!-- Connection Error -->
-<div *ngIf="!loading && connectionError" class="error-container">
-  <div class="error-card">
-    <i class="icon-alert"></i>
-    <h3>Error de Conexión</h3>
-    <p>{{ connectionError }}</p>
-    <button class="btn-retry" (click)="checkConnection()">
-      <i class="icon-refresh"></i>
-      Reintentar
-    </button>
-  </div>
-</div>
-
-<!-- Dashboard Content -->
-<div *ngIf="!loading && !connectionError" class="dashboard-content">
-  
-  <!-- Environmental Sensors Section -->
-  <section class="sensor-section">
-    <div class="section-header">
-      <h2>
-        <i class="icon-environment"></i>
-        Sensores Ambientales
-      </h2>
-      <p>Monitoreo en tiempo real del ambiente</p>
-    </div>
-    
-    <div class="sensor-grid">
-      <div class="sensor-card temperature" *ngFor="let sensor of environmentalSensors">
-        <div class="sensor-header">
-          <div class="sensor-icon">
-            <i [class]="sensor.icon"></i>
-          </div>
-          <div class="sensor-info">
-            <h3>{{ sensor.config?.name || sensor.feedName }}</h3>
-            <p>{{ sensor.config?.description || 'Sensor ambiental' }}</p>
-          </div>
-        </div>
-        
-        <div class="sensor-data">
-          <div class="main-value" [class.no-data]="!sensor.lastValue">
-            <span class="value">{{ sensor.lastValue?.value || '--' }}</span>
-            <span class="unit">{{ sensor.config?.unit || '' }}</span>
-          </div>
-          <div class="timestamp" *ngIf="sensor.lastValue">
-            {{ sensor.lastValue.created_at | date:'short' }}
-          </div>
-          <div class="no-data-message" *ngIf="!sensor.lastValue">
-            Sin datos disponibles
-          </div>
-        </div>
-        
-        <div class="sensor-actions">
-          <button class="btn-chart" (click)="viewHistory(sensor.feedKey)">
-            <i class="icon-chart"></i>
-            Ver Historial
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Activity Sensors Section -->
-  <section class="sensor-section">
-    <div class="section-header">
-      <h2>
-        <i class="icon-activity"></i>
-        Sensores de Actividad
-      </h2>
-      <p>Detección de movimiento y acceso</p>
-    </div>
-    
-    <div class="sensor-grid">
-      <div class="sensor-card activity" *ngFor="let sensor of activitySensors">
-        <div class="sensor-header">
-          <div class="sensor-icon">
-            <i [class]="sensor.icon"></i>
-          </div>
-          <div class="sensor-info">
-            <h3>{{ sensor.config?.name || sensor.feedName }}</h3>
-            <p>{{ sensor.config?.description || 'Sensor de actividad' }}</p>
-          </div>
-        </div>
-        
-        <div class="sensor-data">
-          <div class="main-value" [class.no-data]="!sensor.lastValue">
-            <span class="value">{{ formatActivityValue(sensor) }}</span>
-            <span class="unit" *ngIf="sensor.config?.unit && sensor.lastValue">{{ sensor.config?.unit }}</span>
-          </div>
-          <div class="timestamp" *ngIf="sensor.lastValue">
-            {{ sensor.lastValue.created_at | date:'short' }}
-          </div>
-          <div class="no-data-message" *ngIf="!sensor.lastValue">
-            Sin datos disponibles
-          </div>
-        </div>
-        
-        <div class="sensor-actions">
-          <button class="btn-chart" (click)="viewHistory(sensor.feedKey)">
-            <i class="icon-chart"></i>
-            Ver Historial
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Parking Sensors Section -->
-  <section class="sensor-section">
-    <div class="section-header">
-      <h2>
-        <i class="icon-parking"></i>
-        Sistema de Estacionamiento
-      </h2>
-      <p>Estado de los espacios de estacionamiento</p>
-    </div>
-    
-    <div class="parking-overview">
-      <div class="parking-stats">
-        <div class="stat-card">
-          <div class="stat-number">{{ availableSpaces }}</div>
-          <div class="stat-label">Espacios Disponibles</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">{{ totalSpaces }}</div>
-          <div class="stat-label">Total de Espacios</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">{{ occupancyRate }}%</div>
-          <div class="stat-label">Ocupación</div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="parking-grid">
-      <div class="parking-space" 
-           *ngFor="let sensor of parkingSensors; let i = index"
-           [class.occupied]="isParkingSpaceOccupied(sensor)"
-           [class.available]="!isParkingSpaceOccupied(sensor)"
-           [class.no-data]="!sensor.lastValue">
-        
-        <div class="space-header">
-          <h3>Espacio {{ i + 1 }}</h3>
-          <div class="space-status">
-            <i class="icon-car" *ngIf="isParkingSpaceOccupied(sensor)"></i>
-            <i class="icon-parking" *ngIf="!isParkingSpaceOccupied(sensor) && sensor.lastValue"></i>
-            <i class="icon-alert" *ngIf="!sensor.lastValue"></i>
-            <span>{{ getParkingSpaceStatus(sensor) }}</span>
-          </div>
-        </div>
-        
-        <div class="space-data">
-          <div class="distance-value">
-            <span class="value">{{ sensor.lastValue?.value || '--' }}</span>
-            <span class="unit">cm</span>
-          </div>
-          <div class="timestamp" *ngIf="sensor.lastValue">
-            {{ sensor.lastValue.created_at | date:'short' }}
-          </div>
-        </div>
-        
-        <div class="space-actions">
-          <button class="btn-chart" (click)="viewHistory(sensor.feedKey)">
-            <i class="icon-chart"></i>
-            Historial
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
+  <app-card
+    title="Tarjeta Dos"
+    subtitle="Subtítulo B"
+    content="Contenido de la segunda tarjeta." 
+  >
+    <app-status-tag text="Calidad Moderada"></app-status-tag>
+  </app-card>
+  <!-- <app-status-tag [text]="nivelRuido"></app-status-tag>
+ -->
 
 </div>
 
-<!-- Auto-refresh indicator -->
-<div class="refresh-indicator" [class.active]="autoRefreshEnabled">
-  <i class="icon-refresh" [class.spinning]="refreshing"></i>
-  <span>Auto-actualización: {{ autoRefreshEnabled ? 'Activada' : 'Desactivada' }}</span>
-  <button class="toggle-refresh" (click)="toggleAutoRefresh()">
-    {{ autoRefreshEnabled ? 'Desactivar' : 'Activar' }}
-  </button>
+ 
 </div>
