@@ -1,0 +1,55 @@
+<main>
+  <app-loader></app-loader>
+  <section class="first-section">
+    <button (click)="navigateToHome()">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+    <article>
+      <img class="logotipo" src="images/logo.png" alt="">
+      <h2>¿Ya tienes una cuenta?</h2>
+      <div class="button-container">
+        <app-button
+          [text]="'Iniciar Sesión'"
+          [buttonType]="'outline'"
+          [type]="'button'"
+          (click)="navigateToLogin()"
+        ></app-button>
+      </div>
+    </article>
+  </section>
+  <section class="register-form-container">
+    <form (submit)="registerHandler($event)">
+      <h1>Crear Cuenta</h1>
+      <app-input
+        [icon]="'person'"
+        [placeholder]="'Usuario'"
+        [type]="'text'"
+        [name]="'username'"
+      ></app-input>
+      <app-input
+        [icon]="'email'"
+        [placeholder]="'Correo Electrónico'"
+        [type]="'email'"
+        [name]="'email'"
+      ></app-input>
+      <app-input
+        [icon]="'lock'"
+        [placeholder]="'Contraseña'"
+        [type]="'password'"
+        [name]="'password_hash'"
+      ></app-input>
+      <app-input
+        [icon]="'add_photo_alternate'"
+        [placeholder]="'URL Foto de Perfil (Opcional)'"
+        [type]="'url'"
+        [name]="'photo_profile_url'"
+      ></app-input>
+
+      <app-button
+        [text]="'Continuar'"
+        [buttonType]="'primary'"
+        [type]="'submit'"
+      ></app-button>
+    </form>
+  </section>
+</main>

@@ -1,0 +1,12 @@
+<div class="card-container">
+  <div class="card-content">
+    <h3>{{ title }}</h3>
+    <h5 *ngIf="subtitle">{{ subtitle }}</h5>
+    <p>{{ content }}</p>
+    
+    <!-- Proyección de contenido adicional -->
+    <div class="card-extra-content">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

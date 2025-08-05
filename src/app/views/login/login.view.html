@@ -1,0 +1,44 @@
+<main>
+  <app-loader></app-loader>
+  <section class="first-section">
+    <button (click)="navigateToHome()">
+      <span class="material-symbols-outlined" >arrow_back</span>
+    </button>
+    <article>
+      <img class="logotipo" src="images/logo.png" alt="">
+      <h2>¿No tienes una cuenta?</h2>
+      <div class="button-container">
+        <app-button
+          [text]="'Registrarse'"
+          [buttonType]="'outline'"
+          [type]="'button'"
+          (click)="navigateToRegister()"
+        ></app-button>
+      </div>
+    </article>
+  </section>
+  <section class="login-form-container">
+    <form (submit)="loginHandler($event)">
+      <h1>Iniciar Sesión</h1>
+      <app-input
+        [icon]="'person'"
+        [placeholder]="'Usuario'"
+        [type]="'text'"
+        [name]="'username'"
+
+      ></app-input>
+      <app-input
+        [icon]="'lock'"
+        [placeholder]="'Contraseña'"
+        [type]="'password'"
+        [name]="'password_hash'"
+      ></app-input>
+
+      <app-button
+        [text]="'Continuar'"
+        [buttonType]="'primary'"
+        [type]="'submit'"
+      ></app-button>
+    </form>
+  </section>
+</main>

@@ -1,0 +1,36 @@
+<!-- filepath: c:\itdev\Consulta-Medica-Web-App\src\app\components\table\table.html -->
+<div class="table-container">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <ng-container *ngFor="let column of columns" [matColumnDef]="column.key">
+      <th mat-header-cell *matHeaderCellDef 
+          [style.width]="getColumnWidth(column)"
+          [style.height]="getHeaderHeight()">
+        <div class="header-content">
+          <span>{{ column.header }}</span>
+          <span *ngIf="column.showTriangle" class="material-symbols-outlined triangle-icon">arrow_drop_down</span>
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let row" 
+          [style.width]="getColumnWidth(column)"
+          [style.height]="getRowHeight()">
+        {{ row[column.key] }}
+      </td>
+    </ng-container>
+
+    <!-- Columna de acciones -->
+    <ng-container matColumnDef="actions" *ngIf="showActions">
+      <th mat-header-cell *matHeaderCellDef 
+          [style.height]="getHeaderHeight()">
+        <div class="header-content">
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let row" 
+          [style.height]="getRowHeight()">
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="data-row"></tr>
+  </table>
+</div>
