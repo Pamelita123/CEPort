@@ -1,3 +1,5 @@
+@use '../../../styles.scss' as *;
+
 .card-container {
   background-color: #0D0D0D; // fondo negro
   border-radius: 16px;
@@ -5,12 +7,13 @@
   position: relative;
   z-index: 0;
   color: white;
+  min-height: 150px; // Altura mínima para consistencia
 
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    padding: 1px; // grosor del borde
+    padding: 3px; // grosor del borde
     border-radius: 16px;
     background: linear-gradient(135deg, #D6FF41, #ffffff);
     -webkit-mask:
@@ -25,38 +28,226 @@
     background-color: #111111;
     border-radius: 14px;
     padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 
-    h3 {
-      margin: 0;
-      font-size: 1.25rem;
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      min-height: 50px;
+
+      .header-left {
+        flex: 1;
+
+        h3 {
+          margin: 0;
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: #ffffff;
+          line-height: 1.2;
+        }
+
+        h5 {
+          margin: 5px 0 0 0;
+          font-weight: 400;
+          font-size: 0.85rem;
+          color: #ccc;
+          opacity: 0.8;
+        }
+      }
+
+      .header-right {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        text-align: right;
+        min-width: 80px;
+
+        .right-value {
+          font-size: 2rem;
+          font-weight: 700;
+          color: #ffffff;
+          line-height: 1;
+          margin-bottom: 2px;
+        }
+
+        .right-unit {
+          font-size: 0.9rem;
+          color: #ccc;
+          font-weight: 500;
+          margin-bottom: 4px;
+        }
+
+        .right-subtitle {
+          font-size: 0.75rem;
+          color: #888;
+          opacity: 0.8;
+        }
+      }
     }
 
-    h5 {
-      margin: 0;
-      font-weight: 400;
-      color: #ccc;
+    .card-body {
+      flex: 1;
+
+      p {
+        margin: 0;
+        color: #ddd;
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
     }
 
-    p {
+    .chart-area {
+      flex: 1;
+      min-height: 120px;
       margin-top: 10px;
-      color: #ddd;
+
+      .chart-placeholder {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.3);
+        border: 2px dashed #666;
+        border-radius: 8px;
+        color: #888;
+        font-size: 0.9rem;
+      }
     }
 
     .card-extra-content {
-      margin-top: 15px;
-      
+      margin-top: auto; // Empujar al final
+
       // Estilos para elementos proyectados
       :ng-deep app-status-tag {
         display: inline-block;
         margin-bottom: 10px;
       }
-      
+
+      // Para elementos de clima
+      :ng-deep .climate-data {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 15px;
+        gap: 10px;
+
+        .climate-item {
+          text-align: center;
+          flex: 1;
+
+          .value {
+            display: block;
+            font-size: 1.8rem;
+            color: $color-amarillo;
+            font-weight: bold;
+            margin-bottom: 5px;
+            line-height: 1;
+          }
+
+          .label {
+            color: #cccccc;
+            font-size: 0.85rem;
+            opacity: 0.9;
+          }
+        }
+      }
+
+      // Para timestamps y elementos pequeños
+      :ng-deep .notification-timestamp {
+        margin-top: 10px;
+
+        small {
+          color: #888;
+          font-style: italic;
+          font-size: 0.75rem;
+        }
+      }
+
       // Para otros elementos futuros
       :ng-deep > * {
         margin-bottom: 8px;
-        
+
         &:last-child {
           margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+// Variantes de card para diferentes tipos
+.card-container {
+  // Card de sensor (con gráfico)
+  &.sensor-card {
+    .card-content {
+      min-height: 250px;
+    }
+  }
+
+  // Card de métrica (compacta)
+  &.metric-card {
+    .card-content {
+      min-height: 120px;
+
+      .card-header .header-right .right-value {
+        font-size: 2.5rem;
+      }
+    }
+  }
+
+  // Card de clima (dos valores)
+  &.climate-card {
+    .card-content {
+      min-height: 140px;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .card-container {
+    .card-content {
+      padding: 15px;
+      gap: 12px;
+
+      .card-header {
+        .header-left h3 {
+          font-size: 1.1rem;
+        }
+
+        .header-right {
+          min-width: 70px;
+
+          .right-value {
+            font-size: 1.5rem;
+          }
+        }
+      }
+
+      :ng-deep .climate-data .climate-item .value {
+        font-size: 1.5rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .card-container {
+    .card-content {
+      padding: 12px;
+      gap: 10px;
+
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+
+        .header-right {
+          align-self: flex-end;
+          min-width: auto;
         }
       }
     }
