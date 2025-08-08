@@ -1,10 +1,31 @@
 <div class="card-container">
   <div class="card-content">
-    <h3>{{ title }}</h3>
-    <h5 *ngIf="subtitle">{{ subtitle }}</h5>
-    <p>{{ content }}</p>
-    
-    <!-- Proyección de contenido adicional -->
+    <!-- Header con título y valor derecho -->
+    <div class="card-header">
+      <div class="header-left">
+        <h3>{{ title }}</h3>
+        <h5 *ngIf="subtitle || sensorType">{{ sensorType || subtitle }}</h5>
+      </div>
+      <div class="header-right" *ngIf="rightValue || value">
+        <span class="right-value">{{ rightValue || value }}</span>
+        <span class="right-unit" *ngIf="unit">{{ unit }}</span>
+        <span class="right-subtitle" *ngIf="rightSubtitle">{{ rightSubtitle }}</span>
+      </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="card-body" *ngIf="content">
+      <p>{{ content }}</p>
+    </div>
+
+    <!-- Área de gráfico (placeholder) -->
+    <div class="chart-area" *ngIf="showChart">
+      <div class="chart-placeholder">
+        📈 Gráfico de datos en tiempo real
+      </div>
+    </div>
+
+    <!-- Proyección de contenido adicional (tags, botones, etc.) -->
     <div class="card-extra-content">
       <ng-content></ng-content>
     </div>

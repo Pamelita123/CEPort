@@ -1,0 +1,74 @@
+<div class="three-dots-container">
+  <!-- Botón de 3 puntos -->
+  <button 
+    class="three-dots-button" 
+    (click)="toggleMenu()"
+    [attr.aria-expanded]="isMenuOpen()"
+    aria-label="Abrir menú">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="5" r="2" fill="currentColor"/>
+      <circle cx="12" cy="12" r="2" fill="currentColor"/>
+      <circle cx="12" cy="19" r="2" fill="currentColor"/>
+    </svg>
+  </button>
+
+  <!-- Backdrop para cerrar el menú -->
+  @if (isMenuOpen()) {
+    <div 
+      class="menu-backdrop" 
+      (click)="onBackdropClick()"
+      aria-hidden="true">
+    </div>
+  }
+
+  <!-- Menú desplegable -->
+  <div 
+    class="dropdown-menu" 
+    [class.open]="isMenuOpen()"
+    role="menu">
+    
+    <div class="menu-header">
+      <h3>Navegación</h3>
+      <button 
+        class="close-button" 
+        (click)="closeMenu()"
+        aria-label="Cerrar menú">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <nav class="menu-items">
+      @for (item of menuItems; track item.route) {
+        <button 
+          class="menu-item"
+          (click)="navigateTo(item.route)"
+          role="menuitem">
+          @if (item.icon) {
+            <span class="material-symbols-outlined menu-icon">{{ item.icon }}</span>
+          }
+          <span class="menu-label">{{ item.label }}</span>
+        </button>
+      }
+    </nav>
+
+    <!-- Sección de usuario (si no está logueado) -->
+    @if (!isUserLoggedIn()) {
+      <div class="menu-footer">
+        <button 
+          class="auth-button login-btn"
+          (click)="navigateTo('/login')"
+          role="menuitem">
+          <span class="material-symbols-outlined">login</span>
+          <span>Iniciar Sesión</span>
+        </button>
+        <button 
+          class="auth-button register-btn"
+          (click)="navigateTo('/register')"
+          role="menuitem">
+          <span class="material-symbols-outlined">person_add</span>
+          <span>Registrarse</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

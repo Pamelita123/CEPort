@@ -1,17 +1,25 @@
 import { Component } from '@angular/core';
-import { ButtonComponent } from '../../layouts/button/button.component';
-import {NavBar} from '../../components/navBar/navBar';
-import{ CardComponent } from '../../layouts/card/card.component';
-import { StatusTagComponent } from '@app/layouts/tag/status-tag.component';
+import { CardComponent } from '@layouts/card/card.component';
+import { StatusTagComponent } from '@layouts/tag/status-tag.component';
+import { LoaderComponent } from '@components/loader/loader';
+import { ThreeDotsComponent } from '@components/threeDots/threeDots.component';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-    imports: [ButtonComponent, NavBar, CardComponent, StatusTagComponent]
-
+  imports: [
+    CardComponent, 
+    StatusTagComponent,
+    LoaderComponent,
+    ThreeDotsComponent
+  ],
+  standalone: true
 })
-
 export class DashboardComponent {
 
+
+  constructor() {
+
+  }
 }

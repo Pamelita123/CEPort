@@ -1,24 +1,106 @@
+<app-loader></app-loader>
+<main>
+  <div class="dashboard-container">
+    <div class="top-bar">
+      <div class="logo-section">
+        <app-three-dots></app-three-dots>
+        <img src="/images/logo.png" alt="Logo de CEPort" class="logo-image" />
+        <div class="logo-text">
+          <span class="port">CEPort</span>
+          <span class="carga">Estación de Carga</span>
+        </div>
+      </div>
+    </div>
 
-<div class="landing-container">
-   
-  <div class="card-grid">
-  <app-card
-    title="Tarjeta Uno"
-    subtitle="Subtítulo A"
-    content="Contenido de la primera tarjeta."
-  ></app-card>
+    <div class="welcome-section">
+      <h1>Bienvenido Pamela</h1>
+      <p class="subtitle">¿Listo para recargar?</p>
+    </div>
+    <section class="charging-points">
+      <h2>Puntos de Carga en Tiempo Real</h2>
+      <div class="chargers-grid">
+        <app-card
+          title="Cargador 1"
+          sensorType="Sensor Ultrasónico HC-SR04"
+          rightValue="0"
+          rightSubtitle="Distancia: 0 cm"
+          [showChart]="true"
+          class="sensor-card">
+          <app-status-tag text="Listo para Cargar"></app-status-tag>
+        </app-card>
 
-  <app-card
-    title="Tarjeta Dos"
-    subtitle="Subtítulo B"
-    content="Contenido de la segunda tarjeta." 
-  >
-    <app-status-tag text="Calidad Moderada"></app-status-tag>
-  </app-card>
-  <!-- <app-status-tag [text]="nivelRuido"></app-status-tag>
- -->
+        <!-- Cargador 2 -->
+        <app-card
+          title="Cargador 2"
+          sensorType="Sensor Ultrasónico HC-SR04"
+          rightValue="0"
+          rightSubtitle="Distancia: 0 cm"
+          [showChart]="true"
+          class="sensor-card">
+          <app-status-tag text="Carga en Proceso"></app-status-tag>
+        </app-card>
+      </div>
+    </section>
+    <section class="environmental-conditions">
+      <h2>Condiciones Ambientales</h2>
+      <div class="conditions-grid">
+        <app-card
+          title="Calidad del Aire"
+          sensorType="Sensor MQ2"
+          rightValue="376"
+          unit="PPM"
+          class="metric-card">
+          <app-status-tag text="Calidad Moderada"></app-status-tag>
+        </app-card>
 
-</div>
+        <app-card
+          title="Clima"
+          sensorType="DHT22"
+          class="climate-card">
+          <div class="climate-data">
+            <div class="climate-item">
+              <span class="value">29.1°C</span>
+              <span class="label">Temperatura</span>
+            </div>
+            <div class="climate-item">
+              <span class="value">59%</span>
+              <span class="label">Humedad</span>
+            </div>
+          </div>
+        </app-card>
+      </div>
+    </section>
 
- 
-</div>
+    <section class="activity-section">
+      <h2>Actividad Registrada</h2>
+      <div class="activity-grid">
+        <app-card
+          title="Nivel de Ruido"
+          sensorType="Micrófono"
+          rightValue="47"
+          unit="dB"
+          class="metric-card">
+          <app-status-tag text="Ruido bajo"></app-status-tag>
+        </app-card>
+
+        <app-card
+          title="Tránsito"
+          rightSubtitle="Última detección: hace 5 min"
+          class="metric-card">
+          <app-status-tag text="Sin presencia"></app-status-tag>
+        </app-card>
+      </div>
+    </section>
+
+    <section class="notifications-section">
+      <h2>Notificaciones del Sistema</h2>
+      <app-card
+        title="Estado del Sistema"
+        content="Todos los sensores están operando con normalidad y no se han detectado fallas en el sistema">
+        <div class="notification-timestamp">
+          <small>Última actualización: hace 5 min</small>
+        </div>
+      </app-card>
+    </section>
+  </div>
+</main>
