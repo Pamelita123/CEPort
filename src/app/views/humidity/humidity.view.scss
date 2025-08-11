@@ -1,0 +1,259 @@
+@use '../../../styles.scss' as *;
+
+.top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; 
+  height: 100px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 2rem; // ✅ Este padding respetará el espacio del contenedor
+  z-index: 1000;
+  gap: 2rem;
+  box-sizing: border-box; // ✅ Incluir padding en el cálculo del ancho
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  color: white;
+  flex-shrink: 0;
+  order: 2;
+
+  .logo-image {
+    width: 60px;
+    height: 60px;
+    margin-right: 12px;
+  }
+
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+    white-space: nowrap;
+
+    .port {
+      font-size: 1.2rem;
+      font-family: 'Titillium Web', sans-serif;
+      font-weight: 600;
+    }
+
+    .carga {
+      font-size: 0.7rem;
+      font-family: 'Titillium Web', sans-serif;
+      opacity: 0.9;
+    }
+  }
+}
+
+.three-dots-menu-container {
+  position: relative;
+  flex-shrink: 0; 
+  order: 1;
+}
+
+// Dashboard Styles
+.dashboard-container {
+  position: relative; // ✅ Añadir position relative para que el top-bar se posicione correctamente
+  padding: 2rem;
+  padding-top: 4rem;
+  min-height: 100vh;
+  color: #ffffff;
+
+  .welcome-section {
+    margin-bottom: 3rem;
+    margin-top: 0; // ✅ Remover margen superior extra
+    
+    h1 {
+      font-size: 3rem;
+      color: $color-amarillo;
+      margin: 0;
+      font-weight: 700;
+      font-family: 'Titillium Web', sans-serif;
+    }
+    
+    p {
+      font-size: 1.4rem;
+      color: $color-amarillo;
+      margin: 0rem 0 0 0;
+      opacity: 0.9;
+    }
+  }
+
+  section {
+    margin-bottom: 3rem;
+    
+    h2 {
+      font-size: 1.7rem;
+      color: #ffffff;
+      margin-bottom: 2rem;
+      font-weight: 600;
+    }
+  }
+
+  // Puntos de Carga
+  .charging-points {
+    .chargers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      
+      .charger-status {
+        margin-bottom: 1rem;
+      }
+      
+      .chart-placeholder {
+        margin-top: 1rem;
+        height: 200px;
+        
+        .chart-mock {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(0, 0, 0, 0.3);
+          border: 2px dashed #666;
+          border-radius: 8px;
+          color: #888;
+          font-size: 1.1rem;
+        }
+      }
+    }
+  }
+
+  // Condiciones Ambientales
+  .environmental-conditions {
+    .conditions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      
+      .climate-data {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 1rem;
+        
+        .climate-item {
+          text-align: center;
+          
+          .value {
+            display: block;
+            font-size: 2.5rem;
+            color: #D6FF41;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+          }
+          
+          .label {
+            color: #cccccc;
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+  }
+
+  // Actividad Registrada
+  .activity-section {
+    .activity-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+  }
+
+  // Notificaciones del Sistema
+  .notifications-section {
+    .notification-timestamp {
+      margin-top: 1rem;
+      
+      small {
+        color: #888;
+        font-style: italic;
+      }
+    }
+  }
+
+  // Botón de actualizar
+  .refresh-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .top-bar {
+    padding: 1rem; // ✅ Reducir padding en tablets
+    gap: 1rem;
+  }
+
+  .dashboard-container {
+    padding: 1rem;
+    padding-top: 6rem; // ✅ Ajustar padding-top en tablets
+    
+    .welcome-section {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      p {
+        font-size: 1.2rem;
+      }
+    }
+    
+    .chargers-grid,
+    .conditions-grid,
+    .activity-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .top-bar {
+    padding: 0.5rem 1rem; // ✅ Padding más pequeño en móviles
+    height: 80px;
+    
+    .logo-section {
+      .logo-image {
+        width: 40px;
+        height: 40px;
+        margin-right: 8px;
+      }
+      
+      .logo-text {
+        .port {
+          font-size: 0.9rem;
+        }
+        
+        .carga {
+          font-size: 0.5rem;
+        }
+      }
+    }
+  }
+
+  .dashboard-container {
+    padding: 0.5rem 1rem; // ✅ Padding más pequeño en móviles
+    padding-top: 5rem; // ✅ Ajustar padding-top en móviles
+    
+    .welcome-section {
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      p {
+        font-size: 1rem;
+      }
+    }
+    
+    section h2 {
+      font-size: 1.4rem;
+    }
+  }
+}
