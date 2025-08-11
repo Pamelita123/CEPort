@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { getTokenFromLocalStorage } from '@services/auth/auth.service';
 
 export interface FeedData {
   id: string;
@@ -76,46 +77,56 @@ export class FeedsService {
 
   constructor(private http: HttpClient) {}
 
-  // ===== UTILITY METHODS =====
+  // Add auth headers from saved JWT
+  private getHttpOptions(extra?: { params?: HttpParams }) {
+    const token = getTokenFromLocalStorage();
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    return { headers, ...(extra?.params ? { params: extra.params } : {}) };
+  }
+
+// ===== UTILITY METHODS =====
 
   checkConnection(): Observable<{ connected: boolean; error?: string }> {
-    return this.http.get<{ connected: boolean; error?: string }>(`${this.apiUrl}/connection`);
+    return this.http.get<{ connected: boolean; error?: string }>(`${this.apiUrl}/connection`, this.getHttpOptions());
   }
 
   initializeDefaultFeeds(): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/initialize`, {});
+    return this.http.post<any>(`${this.apiUrl}/initialize`, {}, this.getHttpOptions());
   }
 
   // ===== FEED OPERATIONS =====
 
   getAllFeeds(): Observable<Feed[]> {
-    return this.http.get<Feed[]>(this.apiUrl);
+    return this.http.get<Feed[]>(this.apiUrl, this.getHttpOptions());
   }
 
   getFeed(feedKey: string): Observable<Feed> {
-    return this.http.get<Feed>(`${this.apiUrl}/${feedKey}`);
+    return this.http.get<Feed>(`${this.apiUrl}/${feedKey}`, this.getHttpOptions());
   }
 
   createFeed(feedPayload: CreateFeedPayload): Observable<Feed> {
-    return this.http.post<Feed>(this.apiUrl, feedPayload);
+    return this.http.post<Feed>(this.apiUrl, feedPayload, this.getHttpOptions());
   }
 
   updateFeed(feedKey: string, feedPayload: Partial<CreateFeedPayload>): Observable<Feed> {
-    return this.http.put<Feed>(`${this.apiUrl}/${feedKey}`, feedPayload);
+    return this.http.put<Feed>(`${this.apiUrl}/${feedKey}`, feedPayload, this.getHttpOptions());
   }
 
   deleteFeed(feedKey: string): Observable<{ success: boolean; message: string }> {
-    return this.http.delete<{ success: boolean; message: string }>(`${this.apiUrl}/${feedKey}`);
+    return this.http.delete<{ success: boolean; message: string }>(`${this.apiUrl}/${feedKey}`, this.getHttpOptions());
   }
 
   // ===== DATA OPERATIONS =====
 
   getAllLastData(): Observable<LastDataSummary[]> {
-    return this.http.get<LastDataSummary[]>(`${this.apiUrl}/data/last-all`);
+    return this.http.get<LastDataSummary[]>(`${this.apiUrl}/data/last-all`, this.getHttpOptions());
   }
 
   getLastData(feedKey: string): Observable<FeedData> {
-    return this.http.get<FeedData>(`${this.apiUrl}/${feedKey}/data/last`);
+    return this.http.get<FeedData>(`${this.apiUrl}/${feedKey}/data/last`, this.getHttpOptions());
   }
 
   getFeedData(
@@ -125,32 +136,26 @@ export class FeedsService {
     endTime?: string
   ): Observable<FeedData[]> {
     let params = new HttpParams().set('limit', limit.toString());
-    
-    if (startTime) {
-      params = params.set('start_time', startTime);
-    }
-    if (endTime) {
-      params = params.set('end_time', endTime);
-    }
-
-    return this.http.get<FeedData[]>(`${this.apiUrl}/${feedKey}/data`, { params });
+    if (startTime) params = params.set('start_time', startTime);
+    if (endTime) params = params.set('end_time', endTime);
+    return this.http.get<FeedData[]>(`${this.apiUrl}/${feedKey}/data`, this.getHttpOptions({ params }));
   }
 
   getChartData(feedKey: string, hours = 24): Observable<ChartData> {
     const params = new HttpParams().set('hours', hours.toString());
-    return this.http.get<ChartData>(`${this.apiUrl}/${feedKey}/chart`, { params });
+    return this.http.get<ChartData>(`${this.apiUrl}/${feedKey}/chart`, this.getHttpOptions({ params }));
   }
 
   createData(feedKey: string, dataPayload: CreateDataPayload): Observable<FeedData> {
-    return this.http.post<FeedData>(`${this.apiUrl}/${feedKey}/data`, dataPayload);
+    return this.http.post<FeedData>(`${this.apiUrl}/${feedKey}/data`, dataPayload, this.getHttpOptions());
   }
 
   updateDataPoint(feedKey: string, dataId: string, value: string | number): Observable<FeedData> {
-    return this.http.put<FeedData>(`${this.apiUrl}/${feedKey}/data/${dataId}`, { value });
+    return this.http.put<FeedData>(`${this.apiUrl}/${feedKey}/data/${dataId}`, { value }, this.getHttpOptions());
   }
 
   deleteDataPoint(feedKey: string, dataId: string): Observable<{ success: boolean; message: string }> {
-    return this.http.delete<{ success: boolean; message: string }>(`${this.apiUrl}/${feedKey}/data/${dataId}`);
+    return this.http.delete<{ success: boolean; message: string }>(`${this.apiUrl}/${feedKey}/data/${dataId}`, this.getHttpOptions());
   }
 
   // ===== CONVENIENCE METHODS =====

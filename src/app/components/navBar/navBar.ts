@@ -2,21 +2,19 @@ import {Component, input, signal, OnInit} from '@angular/core';
 import { ButtonComponent } from '@layouts/button/button.component'
 import { Router } from '@angular/router';
 import { logout, getCurrentUserFromToken } from '@services/auth/auth.service'
+import { ThreeDotsComponent } from '@components/threeDots/threeDots.component';
+
 
 @Component({
   selector: 'nav-bar',
   templateUrl: './navBar.html',
   styleUrls: ['./navBar.scss'],
-  imports: [
-    ButtonComponent
+  imports: [ThreeDotsComponent
   ]
 })
 export class NavBar implements OnInit {
   constructor(private router: Router) {}
 
-  navItems = input<string[]>(
-    ['Home', 'Dashboard', 'Clientes', 'Doctores', 'Diagnóstico', 'Farmacia', 'Recetas']
-  );
   imgProfileUrl = signal<string>("");
   isUserLoggedIn = signal<boolean>(false);
 

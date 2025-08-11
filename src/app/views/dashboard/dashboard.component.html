@@ -1,69 +1,69 @@
 <app-loader></app-loader>
 <main>
   <div class="dashboard-container">
-    <div class="top-bar">
-      <div class="logo-section">
-        <app-three-dots></app-three-dots>
-        <img src="/images/logo.png" alt="Logo de CEPort" class="logo-image" />
-        <div class="logo-text">
-          <span class="port">CEPort</span>
-          <span class="carga">Estación de Carga</span>
-        </div>
-      </div>
-    </div>
+    <nav-bar></nav-bar>
 
     <div class="welcome-section">
-      <h1>Bienvenido Pamela</h1>
+      <h1>Bienvenido {{ username() }}</h1>
       <p class="subtitle">¿Listo para recargar?</p>
     </div>
-    <section class="charging-points">
-      <h2>Puntos de Carga en Tiempo Real</h2>
-      <div class="chargers-grid">
-        <app-card
-          title="Cargador 1"
-          sensorType="Sensor Ultrasónico HC-SR04"
-          rightValue="0"
-          rightSubtitle="Distancia: 0 cm"
-          [showChart]="true"
-          class="sensor-card">
-          <app-status-tag text="Listo para Cargar"></app-status-tag>
-        </app-card>
-
-        <!-- Cargador 2 -->
-        <app-card
-          title="Cargador 2"
-          sensorType="Sensor Ultrasónico HC-SR04"
-          rightValue="0"
-          rightSubtitle="Distancia: 0 cm"
-          [showChart]="true"
-          class="sensor-card">
-          <app-status-tag text="Carga en Proceso"></app-status-tag>
-        </app-card>
+        <section class="charging-points">
+  <h2>Puntos de Carga en Tiempo Real</h2>
+  <div class="chargers-grid">
+    <app-card
+      title="Cargador 1"
+      sensorType="Sensor Ultrasónico HC-SR04"
+      [rightValue]="ul1Value() !== null ? ul1Value()!.toString() : 'N/A'"
+      [rightSubtitle]="ul1Value() !== null && ul1UpdatedAt() ? 'Distancia: ' + ul1Value() + ' cm - Actualizado: ' + ul1UpdatedAt() : (ul1Value() !== null ? 'Distancia: ' + ul1Value() + ' cm' : 'Sin datos')"
+      [showChart]="false"
+      class="sensor-card">
+      <div style="width:100%; height:200px;">
+        <canvas #charger1Chart></canvas>
       </div>
-    </section>
+      <app-status-tag text="Listo para Cargar"></app-status-tag>
+    </app-card>
+
+    <!-- Cargador 2 -->
+    <app-card
+      title="Cargador 2"
+      sensorType="Sensor Ultrasónico HC-SR04"
+      [rightValue]="ul2Value() !== null ? ul2Value()!.toString() : 'N/A'"
+      [rightSubtitle]="ul2Value() !== null && ul2UpdatedAt() ? 'Distancia: ' + ul2Value() + ' cm - Actualizado: ' + ul2UpdatedAt() : (ul2Value() !== null ? 'Distancia: ' + ul2Value() + ' cm' : 'Sin datos')"
+      [showChart]="false"
+      class="sensor-card">
+      <div style="width:100%; height:200px;">
+        <canvas #charger2Chart></canvas>
+      </div>
+      <app-status-tag text="Carga en Proceso"></app-status-tag>
+    </app-card>
+  </div>
+</section>
     <section class="environmental-conditions">
       <h2>Condiciones Ambientales</h2>
       <div class="conditions-grid">
         <app-card
           title="Calidad del Aire"
           sensorType="Sensor MQ2"
-          rightValue="376"
+          [rightValue]="gasValue() !== null ? gasValue()!.toString() : ''"
           unit="PPM"
+          [rightSubtitle]="gasUpdatedAt() ? 'Actualizado: ' + gasUpdatedAt() : 'Sin datos'"
           class="metric-card">
-          <app-status-tag text="Calidad Moderada"></app-status-tag>
+          <app-status-tag [text]="gasStatusText()"></app-status-tag>
         </app-card>
 
         <app-card
           title="Clima"
           sensorType="DHT22"
-          class="climate-card">
+          class="climate-card"
+          [rightSubtitle]="tempUpdatedAt() ? 'Actualizado: ' + tempUpdatedAt() : 'Sin datos'"
+          [rightValue]="'°C'">
           <div class="climate-data">
             <div class="climate-item">
-              <span class="value">29.1°C</span>
+              <span class="value">{{tempValue() !== null ? tempValue()!.toFixed(1) + ' °C' : ''}}</span>
               <span class="label">Temperatura</span>
             </div>
             <div class="climate-item">
-              <span class="value">59%</span>
+              <span class="value">{{ humidityValue() !== null ? humidityValue()!.toFixed(0) + '%' : '' }}</span>
               <span class="label">Humedad</span>
             </div>
           </div>
@@ -77,17 +77,19 @@
         <app-card
           title="Nivel de Ruido"
           sensorType="Micrófono"
-          rightValue="47"
+          [rightValue]="soundValue() !== null ? soundValue()!.toString() : ''"
           unit="dB"
+          [rightSubtitle]="soundUpdatedAt() ? 'Actualizado: ' + soundUpdatedAt() : 'Sin datos'"
           class="metric-card">
-          <app-status-tag text="Ruido bajo"></app-status-tag>
+          <app-status-tag [text]="soundStatusText()"></app-status-tag>
         </app-card>
 
         <app-card
           title="Tránsito"
-          rightSubtitle="Última detección: hace 5 min"
+          [rightValue]="motionValue() !== null ? motionValue()!.toString() : '1'"
+          [rightSubtitle]="motionUpdatedAt() ? 'Última detección: ' + motionUpdatedAt() : 'Sin datos'"
           class="metric-card">
-          <app-status-tag text="Sin presencia"></app-status-tag>
+          <app-status-tag [text]="motionStatusText()"></app-status-tag>
         </app-card>
       </div>
     </section>
@@ -98,7 +100,7 @@
         title="Estado del Sistema"
         content="Todos los sensores están operando con normalidad y no se han detectado fallas en el sistema">
         <div class="notification-timestamp">
-          <small>Última actualización: hace 5 min</small>
+          <small>Última actualización: {{ latestUpdate() || 'Sin datos' }}</small>
         </div>
       </app-card>
     </section>

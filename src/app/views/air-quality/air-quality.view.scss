@@ -4,7 +4,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
+  right: 0; 
   height: 100px;
   display: flex;
   justify-content: flex-end;
@@ -50,7 +50,7 @@
 
 .three-dots-menu-container {
   position: relative;
-  flex-shrink: 0;
+  flex-shrink: 0; 
   order: 1;
 }
 
@@ -65,7 +65,7 @@
   .welcome-section {
     margin-bottom: 3rem;
     margin-top: 0; // ✅ Remover margen superior extra
-
+    
     h1 {
       font-size: 3rem;
       color: $color-amarillo;
@@ -73,7 +73,7 @@
       font-weight: 700;
       font-family: 'Titillium Web', sans-serif;
     }
-
+    
     p {
       font-size: 1.4rem;
       color: $color-amarillo;
@@ -84,7 +84,7 @@
 
   section {
     margin-bottom: 3rem;
-
+    
     h2 {
       font-size: 1.7rem;
       color: #ffffff;
@@ -99,15 +99,15 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 2rem;
-
+      
       .charger-status {
         margin-bottom: 1rem;
       }
-
+      
       .chart-placeholder {
         margin-top: 1rem;
         height: 200px;
-
+        
         .chart-mock {
           height: 100%;
           display: flex;
@@ -129,15 +129,15 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 2rem;
-
+      
       .climate-data {
         display: flex;
         justify-content: space-around;
         margin-top: 1rem;
-
+        
         .climate-item {
           text-align: center;
-
+          
           .value {
             display: block;
             font-size: 2.5rem;
@@ -145,7 +145,7 @@
             font-weight: bold;
             margin-bottom: 0.5rem;
           }
-
+          
           .label {
             color: #cccccc;
             font-size: 1rem;
@@ -168,7 +168,7 @@
   .notifications-section {
     .notification-timestamp {
       margin-top: 1rem;
-
+      
       small {
         color: #888;
         font-style: italic;
@@ -194,17 +194,17 @@
   .dashboard-container {
     padding: 1rem;
     padding-top: 6rem; // ✅ Ajustar padding-top en tablets
-
+    
     .welcome-section {
       h1 {
         font-size: 2rem;
       }
-
+      
       p {
         font-size: 1.2rem;
       }
     }
-
+    
     .chargers-grid,
     .conditions-grid,
     .activity-grid {
@@ -218,19 +218,19 @@
   .top-bar {
     padding: 0.5rem 1rem; // ✅ Padding más pequeño en móviles
     height: 80px;
-
+    
     .logo-section {
       .logo-image {
         width: 40px;
         height: 40px;
         margin-right: 8px;
       }
-
+      
       .logo-text {
         .port {
           font-size: 0.9rem;
         }
-
+        
         .carga {
           font-size: 0.5rem;
         }
@@ -241,35 +241,19 @@
   .dashboard-container {
     padding: 0.5rem 1rem; // ✅ Padding más pequeño en móviles
     padding-top: 5rem; // ✅ Ajustar padding-top en móviles
-
+    
     .welcome-section {
       h1 {
         font-size: 1.8rem;
       }
-
+      
       p {
         font-size: 1rem;
       }
     }
-
+    
     section h2 {
       font-size: 1.4rem;
     }
-  }
-}
-
-figure{
-  width: 55px;
-  height: 55px;
-  border-radius: 50px;
-  background-color: white;
-  margin: 0;
-  margin-left: 1rem;
-
-  img{
-    width: 100%;
-    height: 100%;
-    border-radius: 50px;
-    object-fit: cover;
   }
 }
