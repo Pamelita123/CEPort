@@ -1,19 +1,10 @@
 <app-loader></app-loader>
 <main>
   <div class="dashboard-container">
-    <div class="top-bar">
-      <div class="logo-section">
-        <app-three-dots></app-three-dots>
-        <img src="/images/logo.png" alt="Logo de CEPort" class="logo-image" />
-        <div class="logo-text">
-          <span class="port">CEPort</span>
-          <span class="carga">Estación de Carga</span>
-        </div>
-      </div>
-    </div>
+    <nav-bar></nav-bar>
 
     <div class="welcome-section">
-      <h1>Bienvenido Pamela</h1>
+      <h1>Bienvenido {{ username() }}</h1>
       <p class="subtitle">¿Listo para recargar?</p>
     </div>
     <section class="charging-points">
