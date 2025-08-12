@@ -13,7 +13,7 @@ import { ButtonType } from './button.enums';
 })
 export class ButtonComponent {
 
-  @Input() text: string = 'Click me';
+  @Input() text: string = 'Acciones';
   @Input() buttonType: ButtonType | string = ButtonType.Primary;
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
   @Input('class') customClass: string = '';

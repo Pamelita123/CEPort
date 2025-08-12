@@ -5,12 +5,13 @@ import { LoaderComponent } from '@app/components/loader/loader';
 import { TableComponent, TableColumn, TableRow } from '@components/table/table';
 import { FeedsService, FeedData } from '@services/feeds/feeds.service';
 import { firstValueFrom } from 'rxjs';
+import{ActionsComponent} from '@components/actions/actions.component';
 
 @Component({
   selector: 'app-charger1',
   templateUrl: './charger1.view.html',
   styleUrls: ['./charger1.view.scss'],
-  imports: [CommonModule, NavBar, LoaderComponent, TableComponent],
+  imports: [CommonModule, NavBar, LoaderComponent, TableComponent, ActionsComponent],
   standalone: true
 })
 export class Charger1View implements OnInit, OnDestroy, AfterViewInit {
@@ -54,6 +55,16 @@ export class Charger1View implements OnInit, OnDestroy, AfterViewInit {
       console.error('Error loading ultrasonic-distance data:', e);
       this.rows = [];
       this.cdr.detectChanges();
+    }
+  }
+
+  async onEdit(row: TableRow) {
+    try {
+      await firstValueFrom(this.feeds.deleteDataPoint(this.FEED_KEY, row.rawData.id));
+      this.rows = this.rows.filter(r => r.rawData?.id !== row.rawData.id);
+    } catch (error: any) {
+      console.error('Error deleting ultrasonic-distance data:', error);
+      console.error('Backend message:', error?.error);
     }
   }
 }

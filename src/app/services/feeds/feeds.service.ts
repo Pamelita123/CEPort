@@ -77,7 +77,6 @@ export class FeedsService {
 
   constructor(private http: HttpClient) {}
 
-  // Add auth headers from saved JWT
   private getHttpOptions(extra?: { params?: HttpParams }) {
     const token = getTokenFromLocalStorage();
     let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -87,7 +86,6 @@ export class FeedsService {
     return { headers, ...(extra?.params ? { params: extra.params } : {}) };
   }
 
-// ===== UTILITY METHODS =====
 
   checkConnection(): Observable<{ connected: boolean; error?: string }> {
     return this.http.get<{ connected: boolean; error?: string }>(`${this.apiUrl}/connection`, this.getHttpOptions());
@@ -97,7 +95,6 @@ export class FeedsService {
     return this.http.post<any>(`${this.apiUrl}/initialize`, {}, this.getHttpOptions());
   }
 
-  // ===== FEED OPERATIONS =====
 
   getAllFeeds(): Observable<Feed[]> {
     return this.http.get<Feed[]>(this.apiUrl, this.getHttpOptions());
@@ -119,7 +116,6 @@ export class FeedsService {
     return this.http.delete<{ success: boolean; message: string }>(`${this.apiUrl}/${feedKey}`, this.getHttpOptions());
   }
 
-  // ===== DATA OPERATIONS =====
 
   getAllLastData(): Observable<LastDataSummary[]> {
     return this.http.get<LastDataSummary[]>(`${this.apiUrl}/data/last-all`, this.getHttpOptions());
@@ -158,20 +154,12 @@ export class FeedsService {
     return this.http.delete<{ success: boolean; message: string }>(`${this.apiUrl}/${feedKey}/data/${dataId}`, this.getHttpOptions());
   }
 
-  // ===== CONVENIENCE METHODS =====
-
-  /**
-   * Get parking space status based on ultrasonic distance
-   */
   getParkingSpaceStatus(distance: number): 'occupied' | 'free' | 'unknown' {
     if (distance === 0) return 'unknown';
     if (distance > 0 && distance <= 15) return 'occupied';
     return 'free';
   }
 
-  /**
-   * Get sensor value with appropriate unit formatting
-   */
   formatSensorValue(value: string | number, unit?: string): string {
     const numValue = typeof value === 'string' ? parseFloat(value) : value;
     
@@ -181,9 +169,7 @@ export class FeedsService {
     return unit ? `${formatted} ${unit}` : formatted;
   }
 
-  /**
-   * Get status color based on sensor type and value
-   */
+
   getStatusColor(feedKey: string, value: number): string {
     switch (feedKey) {
       case 'gas-sensor':
@@ -205,9 +191,7 @@ export class FeedsService {
     }
   }
 
-  /**
-   * Get human-readable status text
-   */
+
   getStatusText(feedKey: string, value: number): string {
     switch (feedKey) {
       case 'gas-sensor':

@@ -1,4 +1,3 @@
-// Feed keys según el código ESP32
 export const FEED_KEYS = {
   SOUND_SENSOR: 'sound-sensor',
   GAS_SENSOR: 'gas-sensor',
@@ -11,7 +10,7 @@ export const FEED_KEYS = {
   SERVO_ANGLE: 'servo-angle'
 } as const;
 
-// Configuración de feeds con metadatos
+
 export const FEED_CONFIG = {
   [FEED_KEYS.SOUND_SENSOR]: {
     name: 'Sensor de Sonido',
@@ -60,10 +59,9 @@ export const FEED_CONFIG = {
   }
 } as const;
 
-// Constantes para el procesamiento de datos
 export const PARKING_CONFIG = {
-  OCCUPIED_MAX_DISTANCE: 15, // cm - distancia máxima para considerar ocupado
-  FREE_MIN_DISTANCE: 16      // cm - distancia mínima para considerar libre
+  OCCUPIED_MAX_DISTANCE: 15, 
+  FREE_MIN_DISTANCE: 16    
 } as const;
 
 export type FeedKey = typeof FEED_KEYS[keyof typeof FEED_KEYS];

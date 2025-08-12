@@ -1,5 +1,5 @@
 <div class="three-dots-container">
-  <!-- Botón de 3 puntos -->
+
   <button 
     class="three-dots-button" 
     (click)="toggleMenu()"
@@ -12,7 +12,7 @@
     </svg>
   </button>
 
-  <!-- Backdrop para cerrar el menú -->
+
   @if (isMenuOpen()) {
     <div 
       class="menu-backdrop" 
@@ -21,7 +21,6 @@
     </div>
   }
 
-  <!-- Menú desplegable -->
   <div 
     class="dropdown-menu" 
     [class.open]="isMenuOpen()"
@@ -51,7 +50,6 @@
       }
     </nav>
 
-    <!-- Sección de usuario (si no está logueado) -->
     @if (!isUserLoggedIn()) {
       <div class="menu-footer">
         <button 

@@ -1,8 +1,8 @@
 @use '@angular/material' as mat;
 
-// Existing dialog overrides
+
 @include mat.dialog-overrides((
-  container-color: #000,
+  container-color: #111111,
   subhead-color: #D6FF41,
   subhead-size: 40px,
   subhead-weight: 700,
@@ -10,11 +10,9 @@
   actions-alignment: center
 ));
 
-// Custom modal styles
 .modal-container {
   position: relative;
   padding: 3rem;
-  border: 3px solid #494949;
 
   .close-button {
     position: absolute;

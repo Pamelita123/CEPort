@@ -22,7 +22,6 @@ export class ThreeDotsComponent implements OnInit {
   isMenuOpen = signal<boolean>(false);
   isUserLoggedIn = signal<boolean>(false);
 
-  // Elementos del menú basados en las rutas existentes
   menuItems: MenuItem[] = [
     { label: 'Dashboard', route: '/dashboard', icon: 'dashboard' },
     { label: 'Clima', route: '/clima', icon: 'device_thermostat' },
@@ -64,7 +63,6 @@ export class ThreeDotsComponent implements OnInit {
     this.closeMenu();
   }
 
-  // Cerrar menú al hacer click fuera
   onBackdropClick(): void {
     this.closeMenu();
   }

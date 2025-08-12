@@ -26,9 +26,6 @@ import { feedSchema, createDataSchema, feedKeySchema } from '@joiSchemas/feeds/f
 
 const router = Router();
 
-// ===== UTILITY ROUTES =====
-
-// Check Adafruit IO connection
 router.get('/connection', async (req: Request, res: Response): Promise<void> => {
   try {
     const result = await checkAdafruitConnection();
@@ -39,7 +36,6 @@ router.get('/connection', async (req: Request, res: Response): Promise<void> => 
   }
 });
 
-// Initialize default feeds
 router.post('/initialize', async (req: Request, res: Response): Promise<void> => {
   try {
     const result = await initializeDefaultFeeds();
@@ -50,9 +46,6 @@ router.post('/initialize', async (req: Request, res: Response): Promise<void> =>
   }
 });
 
-// ===== FEED ROUTES =====
-
-// Get all feeds
 router.get('/', async (req: Request, res: Response): Promise<void> => {
   try {
     const feeds = await getAllFeeds();
@@ -63,7 +56,6 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-// Get specific feed
 router.get('/:feedKey', async (req: Request, res: Response): Promise<void> => {
   const { feedKey } = req.params;
 
@@ -86,7 +78,6 @@ router.get('/:feedKey', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-// Create new feed
 router.post('/', async (req: Request, res: Response): Promise<void> => {
   const feedPayload = req.body;
 
@@ -116,7 +107,6 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-// Update feed
 router.put('/:feedKey', async (req: Request, res: Response): Promise<void> => {
   const { feedKey } = req.params;
   const feedPayload = req.body;
@@ -132,7 +122,6 @@ router.put('/:feedKey', async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  // Validate partial feed data
   const { error } = feedSchema.validate(feedPayload, { allowUnknown: true });
   if (error) {
     res.status(400).json({ error: VALIDATION_ERROR(error.message) });
@@ -154,7 +143,6 @@ router.put('/:feedKey', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-// Delete feed
 router.delete('/:feedKey', async (req: Request, res: Response): Promise<void> => {
   const { feedKey } = req.params;
 
@@ -179,9 +167,7 @@ router.delete('/:feedKey', async (req: Request, res: Response): Promise<void> =>
   }
 });
 
-// ===== DATA ROUTES =====
 
-// Get last data for all feeds
 router.get('/data/last-all', async (req: Request, res: Response): Promise<void> => {
   try {
     const lastData = await getAllLastData();
@@ -192,7 +178,7 @@ router.get('/data/last-all', async (req: Request, res: Response): Promise<void> 
   }
 });
 
-// Get last data for specific feed
+
 router.get('/:feedKey/data/last', async (req: Request, res: Response): Promise<void> => {
   const { feedKey } = req.params;
 
@@ -215,7 +201,6 @@ router.get('/:feedKey/data/last', async (req: Request, res: Response): Promise<v
   }
 });
 
-// Get feed data with optional filters
 router.get('/:feedKey/data', async (req: Request, res: Response): Promise<void> => {
   const { feedKey } = req.params;
   const { limit, start_time, end_time } = req.query;
@@ -250,7 +235,6 @@ router.get('/:feedKey/data', async (req: Request, res: Response): Promise<void> 
   }
 });
 
-// Get chart data for feed
 router.get('/:feedKey/chart', async (req: Request, res: Response): Promise<void> => {
   const { feedKey } = req.params;
   const { hours } = req.query;
@@ -280,7 +264,6 @@ router.get('/:feedKey/chart', async (req: Request, res: Response): Promise<void>
   }
 });
 
-// Create new data point
 router.post('/:feedKey/data', async (req: Request, res: Response): Promise<void> => {
   const { feedKey } = req.params;
   const dataPayload = req.body;
@@ -319,7 +302,6 @@ router.post('/:feedKey/data', async (req: Request, res: Response): Promise<void>
   }
 });
 
-// Update data point
 router.put('/:feedKey/data/:dataId', async (req: Request, res: Response): Promise<void> => {
   const { feedKey, dataId } = req.params;
   const { value } = req.body;
@@ -348,7 +330,6 @@ router.put('/:feedKey/data/:dataId', async (req: Request, res: Response): Promis
   }
 });
 
-// Delete data point
 router.delete('/:feedKey/data/:dataId', async (req: Request, res: Response): Promise<void> => {
   const { feedKey, dataId } = req.params;
 

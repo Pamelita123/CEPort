@@ -20,7 +20,6 @@ export class SensorDataService {
   private destroyRef = inject(DestroyRef);
   private feedsService = inject(FeedsService);
 
-  // Sensor data signals
   gasData = signal<SensorData | null>(null);
   temperatureData = signal<SensorData | null>(null);
   humidityData = signal<SensorData | null>(null);
@@ -61,7 +60,6 @@ export class SensorDataService {
       )
       .subscribe();
 
-    // Initial load
     this.updateAllSensorData().subscribe();
   }
 

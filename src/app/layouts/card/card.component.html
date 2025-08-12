@@ -1,6 +1,5 @@
 <div class="card-container">
   <div class="card-content">
-    <!-- Header con título y valor derecho -->
     <div class="card-header">
       <div class="header-left">
         <h3>{{ title }}</h3>
@@ -13,19 +12,16 @@
       </div>
     </div>
 
-    <!-- Contenido principal -->
+
     <div class="card-body" *ngIf="content">
       <p>{{ content }}</p>
     </div>
 
-    <!-- Área de gráfico (placeholder) -->
     <div class="chart-area" *ngIf="showChart">
       <div class="chart-placeholder">
         📈 Gráfico de datos en tiempo real
       </div>
     </div>
-
-    <!-- Proyección de contenido adicional (tags, botones, etc.) -->
     <div class="card-extra-content">
       <ng-content></ng-content>
     </div>
