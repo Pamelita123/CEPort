@@ -2,7 +2,7 @@
 @use '../../../styles.scss' as *;
 
 .table-container {
-  background-color: #111111; // fondo negro
+  background-color: #111111; 
   border-radius: 16px;
   padding: 2px;
   position: relative;
@@ -12,7 +12,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    padding: 2px; // grosor del borde
+    padding: 2px; 
     border-radius: 16px;
     background: linear-gradient(135deg, #D6FF41, #ffffff);
     -webkit-mask: 
@@ -28,7 +28,11 @@
 table {
   table-layout: fixed;
 }
-
+.triangle-icon {
+  font-size: 24px !important;
+  color: $color-blanco !important;
+  flex-shrink: 0 !important;
+}
 .material-symbols-outlined {
   font-variation-settings:
   'FILL' 0,
@@ -43,11 +47,6 @@ table {
   gap: 0.5rem !important;
 }
 
-.triangle-icon {
-  font-size: 24px !important;
-  color: $color-gris !important;
-  flex-shrink: 0 !important;
-}
 
 .mat-sort-header-arrow {
   color: $color-gris !important;
@@ -187,4 +186,40 @@ table {
 }
 .mdc-data-table__cell, .mdc-data-table__header-cell {
     padding: 0 !important;
+}
+
+.action-menu {
+  .mat-mdc-menu-panel {
+    background: #111111 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.13) !important;
+    min-width: 200px !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+}
+
+.menu-item {
+  font-family: 'Open Sans', sans-serif !important;
+  font-size: 16px !important;
+  color: $color-blanco !important; 
+  padding: 18px 24px !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  min-height: 48px !important;
+  transition: background 0.2s;
+
+
+
+  span {
+    color: inherit !important;
+    font-weight: 400 !important;
+    font-size: 16px !important;
+  }
+}
+
+.menu-item + .menu-item {
+  border-top: 2px solid $color-gris !important;
 }

@@ -34,10 +34,9 @@ class AdafruitIOService {
         'X-AIO-Key': this.key,
         'Content-Type': 'application/json'
       },
-      timeout: 15000 // 15 seconds timeout
+      timeout: 15000 
     });
 
-    // Add response interceptor for error handling
     this.client.interceptors.response.use(
       (response) => response,
       (error) => {
@@ -62,11 +61,9 @@ class AdafruitIOService {
     );
   }
 
-  // ===== CONNECTION TEST =====
-  //en joi aparece como checkConnection asi que chequen bien si es necesario cambiarlo
+
   async testConnection(): Promise<boolean> {
     try {
-      // Use feeds endpoint to test connection instead of user endpoint
       await this.client.get(`/${this.username}/feeds`);
       return true;
     } catch (error) {
@@ -75,7 +72,6 @@ class AdafruitIOService {
     }
   }
 
-  // ===== FEED OPERATIONS =====
   
   async getAllFeeds(): Promise<AdafruitFeedResponse[]> {
     const response = await this.client.get(`/${this.username}/feeds`);
@@ -118,7 +114,6 @@ class AdafruitIOService {
     await this.client.delete(`/${this.username}/feeds/${feedKey}`);
   }
 
-  // ===== DATA OPERATIONS =====
 
   async getLastValue(feedKey: string): Promise<AdafruitDataResponse | null> {
     try {
@@ -164,18 +159,14 @@ class AdafruitIOService {
     await this.client.delete(`/${this.username}/feeds/${feedKey}/data/${dataId}`);
   }
 
-  // ===== UTILITY METHODS =====
 
-  /**
-   * Get chart data for a specific feed over a time period
-   */
   async getChartData(feedKey: string, hours = 24): Promise<ChartDataPoint[]> {
     const endTime = new Date();
     const startTime = new Date(endTime.getTime() - (hours * 60 * 60 * 1000));
     
     const data = await this.getFeedData(
       feedKey, 
-      1000, // Get more data points for charts
+      1000, 
       startTime.toISOString(),
       endTime.toISOString()
     );
@@ -187,9 +178,6 @@ class AdafruitIOService {
     })).filter(item => !isNaN(item.value));
   }
 
-  /**
-   * Get summary of last data for all feeds
-   */
   async getAllLastData(): Promise<Array<{feedKey: string, lastValue: AdafruitDataResponse | null}>> {
     const feeds = await this.getAllFeeds();
     const results = await Promise.allSettled(
@@ -205,9 +193,6 @@ class AdafruitIOService {
       .map(result => result.value);
   }
 
-  /**
-   * Initialize default feeds based on ESP32 configuration
-   */
   async initializeDefaultFeeds(): Promise<AdafruitFeedResponse[]> {
     const defaultFeeds = [
       { key: 'sound-sensor', name: 'Sensor de Sonido', description: 'Nivel de ruido detectado por el micrófono', unit: 'dB' },
@@ -244,6 +229,5 @@ class AdafruitIOService {
   }
 }
 
-// Export singleton instance
 const adafruitIOService = new AdafruitIOService();
 export default adafruitIOService;

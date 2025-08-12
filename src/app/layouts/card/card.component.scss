@@ -119,15 +119,13 @@
     }
 
     .card-extra-content {
-      margin-top: auto; // Empujar al final
-
-      // Estilos para elementos proyectados
+      margin-top: auto; 
       :ng-deep app-status-tag {
         display: inline-block;
         margin-bottom: 10px;
       }
 
-      // Para elementos de clima
+
       :ng-deep .climate-data {
         display: flex;
         justify-content: space-around;
@@ -155,7 +153,6 @@
         }
       }
 
-      // Para timestamps y elementos pequeños
       :ng-deep .notification-timestamp {
         margin-top: 10px;
 
@@ -166,7 +163,7 @@
         }
       }
 
-      // Para otros elementos futuros
+
       :ng-deep > * {
         margin-bottom: 8px;
 
@@ -178,16 +175,14 @@
   }
 }
 
-// Variantes de card para diferentes tipos
+
 .card-container {
-  // Card de sensor (con gráfico)
   &.sensor-card {
     .card-content {
       min-height: 250px;
     }
   }
 
-  // Card de métrica (compacta)
   &.metric-card {
     .card-content {
       min-height: 120px;
@@ -198,7 +193,7 @@
     }
   }
 
-  // Card de clima (dos valores)
+
   &.climate-card {
     .card-content {
       min-height: 140px;
@@ -206,7 +201,6 @@
   }
 }
 
-// Responsive design
 @media (max-width: 768px) {
   .card-container {
     .card-content {

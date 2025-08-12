@@ -4,7 +4,14 @@
     <nav-bar></nav-bar>
     <section class="environmental-conditions">
       <h2>Nivel de Ruido</h2>
-      <table-selector [columns]="columns" [rows]="rows" [showActions]="false"></table-selector>
+      <app-actions></app-actions>
+      <br><br>
+      <table-selector 
+      [columns]="columns" 
+      [rows]="rows" 
+      [showActions]="true"
+      (editRow)="onEdit($event)">
+    </table-selector>
     </section>
   </div>
 </main>

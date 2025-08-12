@@ -9,10 +9,10 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding-right: 2rem; // ✅ Este padding respetará el espacio del contenedor
+  padding-right: 2rem; 
   z-index: 1000;
   gap: 2rem;
-  box-sizing: border-box; // ✅ Incluir padding en el cálculo del ancho
+  box-sizing: border-box; 
 }
 
 .logo-section {
@@ -54,9 +54,8 @@
   order: 1;
 }
 
-// Dashboard Styles
 .dashboard-container {
-  position: relative; // ✅ Añadir position relative para que el top-bar se posicione correctamente
+  position: relative; 
   padding: 2rem;
   padding-top: 4rem;
   min-height: 100vh;
@@ -64,7 +63,7 @@
 
   .welcome-section {
     margin-bottom: 3rem;
-    margin-top: 0; // ✅ Remover margen superior extra
+    margin-top: 0; 
     
     h1 {
       font-size: 3rem;
@@ -93,7 +92,6 @@
     }
   }
 
-  // Puntos de Carga
   .charging-points {
     .chargers-grid {
       display: grid;
@@ -123,7 +121,6 @@
     }
   }
 
-  // Condiciones Ambientales
   .environmental-conditions {
     .conditions-grid {
       display: grid;
@@ -155,7 +152,6 @@
     }
   }
 
-  // Actividad Registrada
   .activity-section {
     .activity-grid {
       display: grid;
@@ -164,7 +160,6 @@
     }
   }
 
-  // Notificaciones del Sistema
   .notifications-section {
     .notification-timestamp {
       margin-top: 1rem;
@@ -176,7 +171,6 @@
     }
   }
 
-  // Botón de actualizar
   .refresh-section {
     display: flex;
     justify-content: center;
@@ -184,16 +178,15 @@
   }
 }
 
-// Responsive design
 @media (max-width: 768px) {
   .top-bar {
-    padding: 1rem; // ✅ Reducir padding en tablets
+    padding: 1rem; 
     gap: 1rem;
   }
 
   .dashboard-container {
     padding: 1rem;
-    padding-top: 6rem; // ✅ Ajustar padding-top en tablets
+    padding-top: 6rem; 
     
     .welcome-section {
       h1 {
@@ -216,7 +209,7 @@
 
 @media (max-width: 480px) {
   .top-bar {
-    padding: 0.5rem 1rem; // ✅ Padding más pequeño en móviles
+    padding: 0.5rem 1rem; 
     height: 80px;
     
     .logo-section {
@@ -239,8 +232,8 @@
   }
 
   .dashboard-container {
-    padding: 0.5rem 1rem; // ✅ Padding más pequeño en móviles
-    padding-top: 5rem; // ✅ Ajustar padding-top en móviles
+    padding: 0.5rem 1rem; 
+    padding-top: 5rem; 
     
     .welcome-section {
       h1 {

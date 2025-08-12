@@ -5,10 +5,13 @@
 
     <section class="environmental-conditions">
       <h2>Historial de Temperatura</h2>
+      <app-actions></app-actions>
+      <br><br>
       <table-selector
         [columns]="columns"
         [rows]="rows"
-        [showActions]="false">
+        [showActions]="true"
+        (editRow)="onEdit($event)">
       </table-selector>
     </section>
   </div>

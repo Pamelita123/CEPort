@@ -13,7 +13,6 @@ import {
   SERVER_ERROR
 } from '@app/api/constants/errors/errors.constant';
 
-// ===== FEED MANAGEMENT =====
 
 export const getAllFeeds = async () => {
   try {
@@ -47,18 +46,15 @@ export const getFeed = async (feedKey: string) => {
 
 export const createFeed = async (feedPayload: FeedPayload) => {
   try {
-    // Verificar si el feed ya existe
     try {
       await adafruitService.getFeed(feedPayload.key);
       throw new Error(FEED_ALREADY_EXISTS(feedPayload.key));
     } catch (error: any) {
-      // Si el error es 404, el feed no existe y podemos crearlo
       if (!error.message.includes('404')) {
         throw error;
       }
     }
 
-    // Enriquecer con configuración por defecto si está disponible
     const config = FEED_CONFIG[feedPayload.key as FeedKey];
     if (config) {
       feedPayload.name = feedPayload.name || config.name;
@@ -70,7 +66,7 @@ export const createFeed = async (feedPayload: FeedPayload) => {
   } catch (error: any) {
     console.error(SERVER_ERROR(error));
     if (error.message.includes(FEED_ALREADY_EXISTS(''))) {
-      throw error; // Re-throw our custom error
+      throw error; 
     }
     if (error.message.includes('401') || error.message.includes('403')) {
       throw new Error(ADAFRUIT_IO_UNAUTHORIZED);
@@ -110,7 +106,6 @@ export const deleteFeed = async (feedKey: string) => {
   }
 };
 
-// ===== DATA OPERATIONS =====
 
 export const getLastData = async (feedKey: string) => {
   try {
@@ -122,7 +117,7 @@ export const getLastData = async (feedKey: string) => {
   } catch (error: any) {
     console.error(SERVER_ERROR(error));
     if (error.message.includes(NO_DATA_AVAILABLE(''))) {
-      throw error; // Re-throw our custom error
+      throw error; 
     }
     if (error.message.includes('404')) {
       throw new Error(FEED_NOT_FOUND(feedKey));
@@ -219,7 +214,6 @@ export const deleteDataPoint = async (feedKey: string, dataId: string) => {
   }
 };
 
-// ===== CHART DATA =====
 
 export const getChartFeedData = async (feedKey: string, hours = 24) => {
   try {
@@ -243,7 +237,6 @@ export const getChartFeedData = async (feedKey: string, hours = 24) => {
   }
 };
 
-// ===== UTILITY FUNCTIONS =====
 
 export const initializeDefaultFeeds = async () => {
   try {
@@ -286,7 +279,6 @@ export const checkAdafruitConnection = async () => {
   try {
     const isConnected = await adafruitService.testConnection();
     if (isConnected) {
-      // If connected, also get basic info about the account
       const feeds = await adafruitService.getAllFeeds();
       return { 
         connected: true,

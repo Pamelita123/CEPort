@@ -172,7 +172,6 @@
   }
 }
 
-// Animaciones
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -182,7 +181,6 @@
   }
 }
 
-// Responsive design
 @media (max-width: 768px) {
   .dropdown-menu {
     min-width: 220px;
