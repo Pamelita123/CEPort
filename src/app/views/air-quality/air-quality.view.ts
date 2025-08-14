@@ -5,7 +5,11 @@ import { LoaderComponent } from '@app/components/loader/loader';
 import { TableComponent, TableColumn, TableRow } from '@components/table/table';
 import { FeedsService, FeedData } from '@services/feeds/feeds.service';
 import { firstValueFrom } from 'rxjs';
-import{ActionsComponent} from '@components/actions/actions.component';
+import { ActionsComponent } from '@components/actions/actions.component';
+import { ModalService } from '@components/modal/modal.service';
+import { ModalData } from '@components/modal/modal.model';
+import { Validators } from '@angular/forms';
+import { Alert } from '@components/alert/alert';
 
 @Component({
   selector: 'app-air-quality',
@@ -23,14 +27,28 @@ export class AirQualityView implements OnInit, OnDestroy, AfterViewInit {
     { key: 'id', header: 'ID', type: 'text', width: 320 }
   ];
 
-  // Usa el mismo key en GET y DELETE:
   readonly feedKey = 'gas-sensor';
   rows: TableRow[] = [];
   private pollId: any;
 
-  constructor(private feeds: FeedsService, private cdr: ChangeDetectorRef) {}
+  feedName: string | null = null;
 
-  async ngOnInit(): Promise<void> {}
+  constructor(
+    private feeds: FeedsService,
+    private cdr: ChangeDetectorRef,
+    private modal: ModalService,
+    private alert: Alert
+  ) {}
+
+  async ngOnInit(): Promise<void> {
+    try {
+      const feed = await firstValueFrom(this.feeds.getFeed(this.feedKey));
+      this.feedName = feed?.name ?? null;
+      this.cdr.detectChanges();
+    } catch (e) {
+      console.error('No se pudo cargar el nombre del sensor:', e);
+    }
+  }
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.loadRows();
@@ -60,13 +78,66 @@ export class AirQualityView implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async onEdit(row: TableRow) {
+    const ref = this.modal.open({
+      title: 'Editar punto de dato',
+      confirmButtonText: 'Guardar',
+      fields: [
+        {
+          name: 'value',
+          label: 'Valor',
+          type: 'number',
+          initialValue: row?.rawData?.value ?? '',
+          validators: [Validators.required]
+        }
+      ]
+    } as ModalData);
+
+    ref.afterClosed().subscribe(async (result) => {
+      if (!result) return;
+
+      const newValue = Number(result.value);
+      if (Number.isNaN(newValue)) {
+        this.alert.showError('Valor inválido.');
+        return;
+      }
+
+      try {
+        const updated = await firstValueFrom(
+          this.feeds.updateDataPoint(this.feedKey, row.rawData.id, newValue)
+        );
+
+        this.rows = this.rows.map(r => {
+          if (r.rawData?.id !== row.rawData.id) return r;
+          const newVal = typeof updated.value === 'number'
+            ? updated.value
+            : parseFloat(String(updated.value));
+          return {
+            ...r,
+            value: newVal,
+            created_at: new Date(updated.created_at).toLocaleString(),
+            rawData: { ...r.rawData, ...updated }
+          };
+        });
+        this.cdr.detectChanges();
+        this.alert.showSuccess('Registro actualizado.');
+      } catch (e) {
+        console.error('Error updating data point:', e);
+        this.alert.showError('Error al actualizar el registro.');
+      }
+    });
+  }
+
+  async onDelete(row: TableRow) {
     try {
       await firstValueFrom(this.feeds.deleteDataPoint(this.feedKey, row.rawData.id));
       this.rows = this.rows.filter(r => r.rawData?.id !== row.rawData.id);
+      this.cdr.detectChanges();
+      this.alert.showSuccess('Registro eliminado.');
     } catch (error) {
       console.error('Error deleting air quality data:', error);
       // @ts-ignore
       console.error('Backend message:', (error as any)?.error);
+      this.alert.showError('Error al eliminar el registro.');
     }
   }
 }

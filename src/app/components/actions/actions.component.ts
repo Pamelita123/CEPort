@@ -18,7 +18,7 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./actions.component.scss']
 })
 export class ActionsComponent {
-  @Input() feedKey?: string; // opcional: si lo pasas, se usa para Eliminar
+  @Input() feedKey?: string; 
 
   constructor(
     private modal: ModalService,
@@ -47,11 +47,9 @@ export class ActionsComponent {
 
   openDelete(): void {
     if (this.feedKey) {
-      // Confirmación directa con key conocida
       const ref = this.modal.open({
         title: 'Eliminar sensor',
         confirmButtonText: 'Aceptar',
-        // sin fields: modal de confirmación simple
       } as ModalData);
 
       ref.afterClosed().subscribe(async (ok) => {
@@ -61,7 +59,6 @@ export class ActionsComponent {
       return;
     }
 
-    // Si no se pasa feedKey, pedimos la key
     const ref = this.modal.open({
       title: 'Eliminar sensor',
       confirmButtonText: 'Aceptar',
@@ -74,6 +71,75 @@ export class ActionsComponent {
       if (!result?.key) return;
       await this.deleteByKey(result.key);
     });
+  }
+
+  async openEdit(): Promise<void> {
+    try {
+
+      if (this.feedKey) {
+        const current = await firstValueFrom(this.feeds.getFeed(this.feedKey));
+        const ref = this.modal.open({
+          title: 'Editar nombre del sensor',
+          confirmButtonText: 'Guardar',
+          fields: [
+            {
+              name: 'name',
+              label: 'Nuevo nombre',
+              type: 'text',
+              initialValue: current?.name ?? '',
+              validators: [Validators.required]
+            }
+          ]
+        } as ModalData);
+
+        ref.afterClosed().subscribe(async (result) => {
+          if (!result?.name) return;
+          await this.updateByKey(this.feedKey!, result.name);
+        });
+        return;
+      }
+      const feeds = await firstValueFrom(this.feeds.getAllFeeds());
+      const options = feeds.map(f => ({ label: `${f.name} (${f.key})`, value: f.key }));
+
+      const ref = this.modal.open({
+        title: 'Editar nombre del sensor',
+        confirmButtonText: 'Guardar',
+        fields: [
+          {
+            name: 'key',
+            label: 'Selecciona el sensor',
+            type: 'select',
+            options,
+            validators: [Validators.required]
+          },
+          {
+            name: 'name',
+            label: 'Nuevo nombre',
+            type: 'text',
+            validators: [Validators.required]
+          }
+        ]
+      } as ModalData);
+
+      ref.afterClosed().subscribe(async (result) => {
+        if (!result?.key || !result?.name) return;
+        await this.updateByKey(result.key, result.name);
+      });
+    } catch (e: any) {
+      this.alert.showError(e?.error || 'No se pudo cargar la información de los sensores.');
+    }
+  }
+
+  private async updateByKey(key: string, name: string) {
+    this.loader.show('Actualizando sensor...');
+    try {
+      await firstValueFrom(this.feeds.updateFeed(key, { key, name }));
+      this.alert.showSuccess('Nombre del sensor actualizado.');
+    } catch (e: any) {
+      this.alert.showError(e?.error || 'Error al actualizar el sensor.');
+    } finally {
+      this.loader.hide();
+    }
   }
 
   private async deleteByKey(key: string) {

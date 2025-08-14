@@ -34,7 +34,6 @@ export class LoginView {
       password_hash: formData.get('password_hash') as string
     }
 
-    // Mostrar loader
     this.loaderService.show('Iniciando sesión...');
 
     try {
@@ -62,7 +61,6 @@ export class LoginView {
       const errorMessage = error instanceof Error ? error.message : 'Ha ocurrido un error. Por favor, inténtalo de nuevo más tarde.';
       this.alert.showError(`Login failed: ${errorMessage}`);
     } finally {
-      // Ocultar loader
       this.loaderService.hide();
     }
   }

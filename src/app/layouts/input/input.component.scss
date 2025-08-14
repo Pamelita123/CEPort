@@ -48,4 +48,10 @@
       opacity: 0;
     }
   }
+
+  select option,
+  select optgroup {
+    color: $color-gris !important;          
+    background-color: $color-negro !important; 
+  }
 }

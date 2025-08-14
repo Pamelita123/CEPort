@@ -27,7 +27,6 @@ import Chart from 'chart.js/auto';
 export class DashboardComponent implements OnDestroy, AfterViewInit {
   username = signal<UserAttributes | string>('');
 
-  // Gas sensor signals
   gasValue = signal<number | null>(null);
   gasUpdatedAt = signal<string | null>(null);
   gasStatusText = computed(() => {
@@ -37,7 +36,6 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
       : 'Sin datos';
   });
 
-  // Temperature sensor signals
   tempValue = signal<number | null>(null);
   tempUpdatedAt = signal<string | null>(null);
   tempStatusText = computed(() => {
@@ -47,11 +45,9 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
       : 'Sin datos';
   });
 
-  // Humidity sensor signals
   humidityValue = signal<number | null>(null);
   humidityUpdatedAt = signal<string | null>(null);
 
-  // Sound sensor signals
   soundValue = signal<number | null>(null);
   soundUpdatedAt = signal<string | null>(null);
   soundStatusText = computed(() => {
@@ -61,7 +57,6 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
       : 'Sin datos';
   });
 
-  // Motion (Tránsito) signals
   motionValue = signal<number | null>(null);
   motionUpdatedAt = signal<string | null>(null);
   motionStatusText = computed(() => {
@@ -71,13 +66,11 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
       : 'Sin datos';
   });
 
-  // Ultrasonic distance signals (for charger cards)
   ul1Value = signal<number | null>(null);
   ul1UpdatedAt = signal<string | null>(null);
   ul2Value = signal<number | null>(null);
   ul2UpdatedAt = signal<string | null>(null);
 
-  // Optional: most recent update across sensors (for “Última actualización”)
   latestUpdate = computed(() => {
     const dates = [
       this.gasUpdatedAt(),
@@ -113,7 +106,6 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
       user.username.charAt(0).toUpperCase() + user.username.substring(1)
     );
 
-    // initial load
     await Promise.all([
       this.loadGas(),
       this.loadTemperature(),
@@ -124,7 +116,6 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
       this.loadUltrasonic('ultrasonic-distance2', 'ul2'),
     ]);
 
-    // refresh every 30s (sensors)
     this.pollId = setInterval(() => {
       this.loadGas();
       this.loadTemperature();
@@ -137,9 +128,7 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // initial chart load once canvas is available
     this.loadChargerCharts();
-    // refresh charts every 30s
     this.chartPollId = setInterval(() => this.loadChargerCharts(), 30000);
   }
 
@@ -284,20 +273,17 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
       const { labels, values } = this.buildUsageSeries(chartData);
       this.renderUsageChart(which, labels, values);
     } catch {
-      // Fallback mock if API fails
       const { labels, values } = this.mockUsageSeries();
       this.renderUsageChart(which, labels, values);
     }
   }
 
-  // Build usage 0..40 per hour from distance. Occupied if distance <= 15 cm.
   private buildUsageSeries(cd: {
     data: Array<{ timestamp: string; value: number }>;
   }) {
     if (!cd?.data?.length) return this.mockUsageSeries();
 
     const now = new Date();
-    // last 24 hours labels (local)
     const hours: string[] = Array.from({ length: 24 }, (_, i) => {
       const d = new Date(now);
       d.setHours(now.getHours() - (23 - i), 0, 0, 0);
@@ -310,7 +296,6 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
     for (const p of cd.data) {
       const d = new Date(p.timestamp);
       const hour = d.getHours().toString().padStart(2, '0');
-      // occupancy heuristic
       const occupied =
         typeof p.value === 'number' && p.value > 0 && p.value <= 15;
       if (occupied && counts.has(hour)) {
@@ -323,7 +308,6 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
     return { labels, values };
   }
 
-  // Mock usage if no data
   private mockUsageSeries() {
     const now = new Date();
     const labels: string[] = Array.from({ length: 24 }, (_, i) => {
@@ -333,7 +317,7 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
     });
     const values: number[] = labels.map((_, i) =>
       Math.round((Math.sin(i / 3) + 1) * 20)
-    ); // 0..40 wave
+    ); 
     return { labels, values };
   }
 
@@ -348,7 +332,7 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
         : this.charger2ChartRef?.nativeElement?.getContext('2d');
     if (!ctx) return;
 
-    const color = '#D6FF41'; // new chart color
+    const color = '#D6FF41'; 
     const grid = 'rgba(255,255,255,0.08)';
 
     const config = {

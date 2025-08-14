@@ -4,14 +4,18 @@
     <nav-bar></nav-bar>
 
     <section class="environmental-conditions">
-      <h2>Historial de Temperatura</h2>
+      <h2>
+        Historial de Temperatura
+        <span *ngIf="feedName"> - {{ feedName }}</span>
+      </h2>
       <app-actions></app-actions>
       <br><br>
       <table-selector
         [columns]="columns"
         [rows]="rows"
         [showActions]="true"
-        (editRow)="onEdit($event)">
+        (editRow)="onEdit($event)"
+        (deleteRow)="onDelete($event)">
       </table-selector>
     </section>
   </div>
