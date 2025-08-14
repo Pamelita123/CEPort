@@ -3,15 +3,19 @@
   <div class="dashboard-container">
     <nav-bar></nav-bar>
     <section class="environmental-conditions">
-      <h2>Calidad de Aire</h2>
+      <h2>
+        Calidad de Aire
+        <span *ngIf="feedName"> - {{ feedName }}</span>
+      </h2>
       <app-actions></app-actions>
       <br><br>
       <table-selector 
-      [columns]="columns" 
-      [rows]="rows" 
-      [showActions]="true"
-      (editRow)="onEdit($event)">
-    </table-selector>
+        [columns]="columns" 
+        [rows]="rows" 
+        [showActions]="true"
+        (editRow)="onEdit($event)"
+        (deleteRow)="onDelete($event)">
+      </table-selector>
     </section>
   </div>
 </main>

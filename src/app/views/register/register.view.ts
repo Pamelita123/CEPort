@@ -37,7 +37,6 @@ export class RegisterView {
       photo_profile_url: formData.get('photo_profile_url') as string || 'https://as1.ftcdn.net/v2/jpg/03/46/83/96/1000_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'
     }
 
-    // Mostrar loader
     this.loaderService.show('Registrando usuario...');
 
     try {
@@ -61,7 +60,6 @@ export class RegisterView {
       const errorMessage = error instanceof Error ? error.message : 'Ocurrió un error inesperado durante el registro.';
       this.alert.showError(`Registro fallido: ${errorMessage}`);
     } finally {
-      // Ocultar loader
       this.loaderService.hide();
     }
   }
