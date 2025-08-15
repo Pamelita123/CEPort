@@ -7,37 +7,72 @@
       <h1>Bienvenido {{ username() }}</h1>
       <p class="subtitle">¿Listo para recargar?</p>
     </div>
-        <section class="charging-points">
-  <h2>Puntos de Carga en Tiempo Real</h2>
-  <div class="chargers-grid">
-    <app-card
-      title="Cargador 1"
-      sensorType="Sensor Ultrasónico HC-SR04"
-      [rightValue]="ul1Value() !== null ? ul1Value()!.toString() : 'N/A'"
-      [rightSubtitle]="ul1Value() !== null && ul1UpdatedAt() ? 'Distancia: ' + ul1Value() + ' cm - Actualizado: ' + ul1UpdatedAt() : (ul1Value() !== null ? 'Distancia: ' + ul1Value() + ' cm' : 'Sin datos')"
-      [showChart]="false"
-      class="sensor-card">
-      <div style="width:100%; height:250px;">
-        <canvas #charger1Chart></canvas>
-      </div>
-      <app-status-tag text="Listo para Cargar"></app-status-tag>
-    </app-card>
+    <section class="charging-points">
+      <h2>Puntos de Carga en Tiempo Real</h2>
+      <div class="chargers-grid">
+        <app-card
+          title="Cargador 1"
+          sensorType="Sensor Ultrasónico HC-SR04"
+          [rightValue]="ul1Value() !== null ? ul1Value()!.toString() : 'N/A'"
+          [rightSubtitle]="
+            ul1Value() !== null && ul1UpdatedAt()
+              ? 'Distancia: ' +
+                ul1Value() +
+                ' cm - Actualizado: ' +
+                ul1UpdatedAt()
+              : ul1Value() !== null
+              ? 'Distancia: ' + ul1Value() + ' cm'
+              : 'Sin datos'
+          "
+          [showChart]="false"
+          class="sensor-card"
+        >
+          <div style="width: 100%; height: 200px">
+            <canvas #charger1Chart></canvas>
+          </div>
+          <app-status-tag
+            [text]="
+              ul1Value() != null && ul1Value()! > 0
+                ? 'Carga en proceso'
+                : 'Listo para cargar'
+            "
+          >
+            ></app-status-tag
+          >
+        </app-card>
 
-
-    <app-card
-      title="Cargador 2"
-      sensorType="Sensor Ultrasónico HC-SR04"
-      [rightValue]="ul2Value() !== null ? ul2Value()!.toString() : 'N/A'"
-      [rightSubtitle]="ul2Value() !== null && ul2UpdatedAt() ? 'Distancia: ' + ul2Value() + ' cm - Actualizado: ' + ul2UpdatedAt() : (ul2Value() !== null ? 'Distancia: ' + ul2Value() + ' cm' : 'Sin datos')"
-      [showChart]="false"
-      class="sensor-card">
-      <div style="width:100%; height:250px;">
-        <canvas #charger2Chart></canvas>
+        <app-card
+          title="Cargador 2"
+          sensorType="Sensor Ultrasónico HC-SR04"
+          [rightValue]="ul2Value() !== null ? ul2Value()!.toString() : 'N/A'"
+          [rightSubtitle]="
+            ul2Value() !== null && ul2UpdatedAt()
+              ? 'Distancia: ' +
+                ul2Value() +
+                ' cm - Actualizado: ' +
+                ul2UpdatedAt()
+              : ul2Value() !== null
+              ? 'Distancia: ' + ul2Value() + ' cm'
+              : 'Sin datos'
+          "
+          [showChart]="false"
+          class="sensor-card"
+        >
+          <div style="width: 100%; height: 200px">
+            <canvas #charger2Chart></canvas>
+          </div>
+          <app-status-tag
+            [text]="
+              ul2Value() != null && ul2Value()! > 0
+                ? 'Carga en proceso'
+                : 'Listo para cargar'
+            "
+          >
+            ></app-status-tag
+          >
+        </app-card>
       </div>
-      <app-status-tag text="Carga en Proceso"></app-status-tag>
-    </app-card>
-  </div>
-</section>
+    </section>
     <section class="environmental-conditions">
       <h2>Condiciones Ambientales</h2>
       <div class="conditions-grid">
@@ -46,8 +81,11 @@
           sensorType="Sensor MQ2"
           [rightValue]="gasValue() !== null ? gasValue()!.toString() : ''"
           unit="PPM"
-          [rightSubtitle]="gasUpdatedAt() ? 'Actualizado: ' + gasUpdatedAt() : 'Sin datos'"
-          class="metric-card">
+          [rightSubtitle]="
+            gasUpdatedAt() ? 'Actualizado: ' + gasUpdatedAt() : 'Sin datos'
+          "
+          class="metric-card"
+        >
           <app-status-tag [text]="gasStatusText()"></app-status-tag>
         </app-card>
 
@@ -55,15 +93,24 @@
           title="Clima"
           sensorType="DHT22"
           class="climate-card"
-          [rightSubtitle]="tempUpdatedAt() ? 'Actualizado: ' + tempUpdatedAt() : 'Sin datos'"
-          [rightValue]="'°C'">
+          [rightSubtitle]="
+            tempUpdatedAt() ? 'Actualizado: ' + tempUpdatedAt() : 'Sin datos'
+          "
+          [rightValue]="'°C'"
+        >
           <div class="climate-data">
             <div class="climate-item">
-              <span class="value">{{tempValue() !== null ? tempValue()!.toFixed(1) + ' °C' : ''}}</span>
+              <span class="value">{{
+                tempValue() !== null ? tempValue()!.toFixed(1) + " °C" : ""
+              }}</span>
               <span class="label">Temperatura</span>
             </div>
             <div class="climate-item">
-              <span class="value">{{ humidityValue() !== null ? humidityValue()!.toFixed(0) + '%' : '' }}</span>
+              <span class="value">{{
+                humidityValue() !== null
+                  ? humidityValue()!.toFixed(0) + "%"
+                  : ""
+              }}</span>
               <span class="label">Humedad</span>
             </div>
           </div>
@@ -79,16 +126,26 @@
           sensorType="Micrófono"
           [rightValue]="soundValue() !== null ? soundValue()!.toString() : ''"
           unit="dB"
-          [rightSubtitle]="soundUpdatedAt() ? 'Actualizado: ' + soundUpdatedAt() : 'Sin datos'"
-          class="metric-card">
+          [rightSubtitle]="
+            soundUpdatedAt() ? 'Actualizado: ' + soundUpdatedAt() : 'Sin datos'
+          "
+          class="metric-card"
+        >
           <app-status-tag [text]="soundStatusText()"></app-status-tag>
         </app-card>
 
         <app-card
           title="Tránsito"
-          [rightValue]="motionValue() !== null ? motionValue()!.toString() : '1'"
-          [rightSubtitle]="motionUpdatedAt() ? 'Última detección: ' + motionUpdatedAt() : 'Sin datos'"
-          class="metric-card">
+          [rightValue]="
+            motionValue() !== null ? motionValue()!.toString() : '1'
+          "
+          [rightSubtitle]="
+            motionUpdatedAt()
+              ? 'Última detección: ' + motionUpdatedAt()
+              : 'Sin datos'
+          "
+          class="metric-card"
+        >
           <app-status-tag [text]="motionStatusText()"></app-status-tag>
         </app-card>
       </div>
@@ -98,8 +155,8 @@
       <h2>Notificaciones del Sistema</h2>
       <app-card
         title="Estado del Sistema"
-        content="Todos los sensores están operando con normalidad y no se han detectado fallas en el sistema">
-        
+        content="Todos los sensores están operando con normalidad y no se han detectado fallas en el sistema"
+      >
       </app-card>
     </section>
   </div>
