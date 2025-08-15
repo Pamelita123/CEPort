@@ -273,128 +273,168 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
       const { labels, values } = this.buildUsageSeries(chartData);
       this.renderUsageChart(which, labels, values);
     } catch {
-      const { labels, values } = this.mockUsageSeries();
+      const { labels, values } = this.buildEmptySeries();
       this.renderUsageChart(which, labels, values);
     }
   }
 
-  private buildUsageSeries(cd: {
-    data: Array<{ timestamp: string; value: number }>;
-  }) {
-    if (!cd?.data?.length) return this.mockUsageSeries();
+private buildUsageSeries(cd: { data: Array<{ timestamp: string; value: number }> }) {
+    if (!cd || !Array.isArray(cd.data) || cd.data.length === 0) {
+      return this.buildEmptySeries();
+    }
 
+    // Sort ASC by time
+    const points = [...cd.data].sort(
+      (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+
+    // Last 24h window (floored to the hour)
     const now = new Date();
-    const hours: string[] = Array.from({ length: 24 }, (_, i) => {
-      const d = new Date(now);
-      d.setHours(now.getHours() - (23 - i), 0, 0, 0);
-      return d.getHours().toString().padStart(2, '0');
-    });
+    const start = new Date(now);
+    start.setHours(now.getHours() - 23, 0, 0, 0);
 
-    const counts = new Map<string, number>();
-    hours.forEach((h) => counts.set(h, 0));
+    // bucket: hourStart(ms) -> detection count
+    const counts = new Map<number, number>();
 
-    for (const p of cd.data) {
-      const d = new Date(p.timestamp);
-      const hour = d.getHours().toString().padStart(2, '0');
-      const occupied =
-        typeof p.value === 'number' && p.value > 0 && p.value <= 15;
-      if (occupied && counts.has(hour)) {
-        counts.set(hour, Math.min(40, (counts.get(hour) || 0) + 1));
+    // Count a detection when we transition from "no data" (<= 0) to "data" (> 0)
+    let prevHasValue = false;
+    for (const p of points) {
+      const ts = new Date(p.timestamp);
+      if (ts < start || ts > now) continue;
+
+      const hasValue = typeof p.value === 'number' && p.value > 0;
+      if (hasValue && !prevHasValue) {
+        const hourStart = new Date(ts);
+        hourStart.setMinutes(0, 0, 0);
+        const key = hourStart.getTime();
+        counts.set(key, Math.min(20, (counts.get(key) || 0) + 1));
+      }
+      prevHasValue = hasValue;
+    }
+
+    // Build labels/values only for hours that have detections
+    const labels: string[] = [];
+    const values: number[] = [];
+    for (let i = 0; i < 24; i++) {
+      const bucket = new Date(start.getTime() + i * 60 * 60 * 1000);
+      const key = bucket.getTime();
+      const c = counts.get(key) || 0;
+      if (c > 0) {
+        labels.push(`${bucket.getHours().toString().padStart(2, '0')}:00`);
+        values.push(c);
       }
     }
 
-    const labels = hours.map((h) => `${h}:00`);
-    const values = hours.map((h) => counts.get(h) || 0);
     return { labels, values };
   }
 
-  private mockUsageSeries() {
-    const now = new Date();
-    const labels: string[] = Array.from({ length: 24 }, (_, i) => {
-      const d = new Date(now);
-      d.setHours(now.getHours() - (23 - i), 0, 0, 0);
-      return `${d.getHours().toString().padStart(2, '0')}:00`;
-    });
-    const values: number[] = labels.map((_, i) =>
-      Math.round((Math.sin(i / 3) + 1) * 20)
-    ); 
-    return { labels, values };
+
+private buildEmptySeries() {
+    return { labels: [] as string[], values: [] as number[] };
   }
 
-  private renderUsageChart(
-    which: 'charger1' | 'charger2',
-    labels: string[],
-    values: number[]
-  ) {
-    const ctx =
-      which === 'charger1'
-        ? this.charger1ChartRef?.nativeElement?.getContext('2d')
-        : this.charger2ChartRef?.nativeElement?.getContext('2d');
-    if (!ctx) return;
+private renderUsageChart(
+  which: 'charger1' | 'charger2',
+  labels: string[],
+  values: number[]
+) {
+  const ctx =
+    which === 'charger1'
+      ? this.charger1ChartRef?.nativeElement?.getContext('2d')
+      : this.charger2ChartRef?.nativeElement?.getContext('2d');
+  if (!ctx) return;
 
-    const color = '#D6FF41'; 
-    const grid = 'rgba(255,255,255,0.08)';
+  const color = '#D6FF41';
+  const grid = 'rgba(255,255,255,0.08)';
+  const maxY = values.length ? Math.max(...values) : 1;
 
-    const config = {
-      type: 'bar' as const,
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Uso',
-            data: values,
-            backgroundColor: color,
-            borderColor: color,
-            borderWidth: 1,
-          },
-        ],
+  const config = {
+    type: 'line' as const,
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Carros Detectados Por Hora',
+          data: values,
+          borderColor: color,
+          backgroundColor: color,
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          // stepped line
+          stepped: true,
+          tension: 0,
+          fill: false,
+          spanGaps: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        intersect: false,
+        axis: 'x'
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: {
-            grid: { color: grid },
-            ticks: { color: '#fff', maxRotation: 0, autoSkip: true },
-          },
-          y: {
-            beginAtZero: true,
-            suggestedMax: 40,
-            grid: { color: grid },
-            ticks: { color: '#fff', stepSize: 10 },
-          },
+      scales: {
+        x: {
+          grid: { color: grid },
+          ticks: { color: '#fff', maxRotation: 0, autoSkip: true }
         },
-        plugins: {
-          legend: {
-            labels: { color: '#fff' },
-          },
-          tooltip: {
-            titleColor: '#fff',
-            bodyColor: '#fff',
-            backgroundColor: 'rgba(0,0,0,0.8)',
-          },
-        },
+        y: {
+          beginAtZero: true,
+          max: maxY + 1,
+          suggestedMax: maxY + 1,
+          grid: { color: grid },
+          ticks: { color: '#fff', stepSize: 1 }
+        }
       },
-    };
-
-    if (which === 'charger1') {
-      if (this.charger1Chart) {
-        this.charger1Chart.data.labels = labels;
-        this.charger1Chart.data.datasets[0].data = values as any;
-        this.charger1Chart.update();
-      } else {
-        this.charger1Chart = new Chart(ctx, config as any);
+      plugins: {
+        legend: { labels: { color: '#fff' } },
+        tooltip: {
+          titleColor: '#fff',
+          bodyColor: '#fff',
+          backgroundColor: 'rgba(0,0,0,0.8)'
+        }
       }
+    }
+  };
+
+  if (which === 'charger1') {
+    if (this.charger1Chart && (this.charger1Chart.config as any).type !== 'line') {
+      this.charger1Chart.destroy();
+      this.charger1Chart = undefined;
+    }
+    if (this.charger1Chart) {
+      this.charger1Chart.data.labels = labels;
+      this.charger1Chart.data.datasets[0].data = values as any;
+      // keep stepped mode on update
+      (this.charger1Chart.data.datasets[0] as any).stepped = true;
+      (this.charger1Chart.data.datasets[0] as any).tension = 0;
+      (this.charger1Chart.options.scales as any).y.max = maxY;
+      (this.charger1Chart.options.scales as any).y.suggestedMax = maxY;
+      this.charger1Chart.update();
     } else {
-      if (this.charger2Chart) {
-        this.charger2Chart.data.labels = labels;
-        this.charger2Chart.data.datasets[0].data = values as any;
-        this.charger2Chart.update();
-      } else {
-        this.charger2Chart = new Chart(ctx, config as any);
-      }
+      this.charger1Chart = new Chart(ctx, config as any);
+    }
+  } else {
+    if (this.charger2Chart && (this.charger2Chart.config as any).type !== 'line') {
+      this.charger2Chart.destroy();
+      this.charger2Chart = undefined;
+    }
+    if (this.charger2Chart) {
+      this.charger2Chart.data.labels = labels;
+      this.charger2Chart.data.datasets[0].data = values as any;
+      (this.charger2Chart.data.datasets[0] as any).stepped = true;
+      (this.charger2Chart.data.datasets[0] as any).tension = 0;
+      (this.charger2Chart.options.scales as any).y.max = maxY;
+      (this.charger2Chart.options.scales as any).y.suggestedMax = maxY;
+      this.charger2Chart.update();
+    } else {
+      this.charger2Chart = new Chart(ctx, config as any);
     }
   }
+}
 
   private formatDate(iso: string): string {
     const d = new Date(iso);

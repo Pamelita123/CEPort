@@ -17,7 +17,7 @@
       [rightSubtitle]="ul1Value() !== null && ul1UpdatedAt() ? 'Distancia: ' + ul1Value() + ' cm - Actualizado: ' + ul1UpdatedAt() : (ul1Value() !== null ? 'Distancia: ' + ul1Value() + ' cm' : 'Sin datos')"
       [showChart]="false"
       class="sensor-card">
-      <div style="width:100%; height:200px;">
+      <div style="width:100%; height:250px;">
         <canvas #charger1Chart></canvas>
       </div>
       <app-status-tag text="Listo para Cargar"></app-status-tag>
@@ -31,7 +31,7 @@
       [rightSubtitle]="ul2Value() !== null && ul2UpdatedAt() ? 'Distancia: ' + ul2Value() + ' cm - Actualizado: ' + ul2UpdatedAt() : (ul2Value() !== null ? 'Distancia: ' + ul2Value() + ' cm' : 'Sin datos')"
       [showChart]="false"
       class="sensor-card">
-      <div style="width:100%; height:200px;">
+      <div style="width:100%; height:250px;">
         <canvas #charger2Chart></canvas>
       </div>
       <app-status-tag text="Carga en Proceso"></app-status-tag>
